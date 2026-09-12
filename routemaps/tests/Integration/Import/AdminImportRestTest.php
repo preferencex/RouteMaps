@@ -47,7 +47,8 @@ final class AdminImportRestTest extends WP_UnitTestCase {
             $categories
         );
         add_action('rest_api_init', [$controller, 'registerRoutes'], 999);
-        do_action('rest_api_init');
+        $GLOBALS['wp_rest_server'] = null;
+        rest_get_server();
         remove_action('rest_api_init', [$controller, 'registerRoutes'], 999);
     }
 
@@ -56,6 +57,7 @@ final class AdminImportRestTest extends WP_UnitTestCase {
             @unlink($path);
         }
         $this->uploads = [];
+        $GLOBALS['wp_rest_server'] = null;
         parent::tearDown();
     }
 
