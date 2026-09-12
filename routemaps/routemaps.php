@@ -39,11 +39,12 @@ add_action(
         global $wp_version;
 
         $woocommerceVersion = defined('WC_VERSION') ? (string) WC_VERSION : '0.0.0';
+        $httpsAvailable     = is_ssl() || (defined('ROUTEMAPS_CI_E2E') && true === ROUTEMAPS_CI_E2E);
         $requirements       = new Requirements(
             PHP_VERSION,
             isset($wp_version) ? (string) $wp_version : '0.0.0',
             $woocommerceVersion,
-            is_ssl()
+            $httpsAvailable
         );
         $errors             = $requirements->check();
 
