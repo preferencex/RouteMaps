@@ -77,7 +77,19 @@ listing="$ROOT/dist/routemaps-$version.contents.txt"
 unzip -l "$archive" | tee "$listing"
 
 entries="$(unzip -Z1 "$archive")"
-for forbidden in '/tests/' '/assets-src/' '/node_modules/' '/build/' '/dist/' '/.git/'; do
+for forbidden in \
+  '/tests/' \
+  '/assets-src/' \
+  '/node_modules/' \
+  '/build/' \
+  '/dist/' \
+  '/.git/' \
+  '/phpstan-stubs/' \
+  '/playwright-report/' \
+  '/test-results/' \
+  '/coverage/' \
+  '/.phpstan-cache' \
+  '/.phpunit.result.cache'; do
   if grep -Fq "$forbidden" <<<"$entries"; then
     fail "development-only path found in archive: $forbidden"
   fi
