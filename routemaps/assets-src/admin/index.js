@@ -412,6 +412,7 @@ class RouteMapsAdminApp {
 
     const mapConfig = this.config.map || {};
     this.mapEditor = new RouteMapEditor(this.root.querySelector('#routemaps-editor-map'), {
+      assetBaseUrl: this.config.assets?.adminBaseUrl,
       styleUrl: mapConfig.styleUrl || mapConfig.openFreeMapStyleUrl,
       center: this.draft.viewport?.center,
       zoom: Number(this.draft.viewport?.zoom),
