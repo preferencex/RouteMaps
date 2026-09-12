@@ -46,19 +46,6 @@ const waitForStyle = (map, timeoutMs = 8000) => new Promise((resolve, reject) =>
   map.on('style.load', onLoad);
 });
 
-const waitUntilStyleReady = async (map, timeoutMs = 4000) => {
-  const startedAt = Date.now();
-
-  while (Date.now() - startedAt < timeoutMs) {
-    if (map?.isStyleLoaded?.()) {
-      return true;
-    }
-    await new Promise((resolve) => setTimeout(resolve, 50));
-  }
-
-  return Boolean(map?.isStyleLoaded?.());
-};
-
 const featureGeometry = (featureData) => {
   if (!featureData || typeof featureData.getGeoJson !== 'function') {
     return null;
@@ -86,6 +73,8 @@ export class RouteMapEditor {
     this.degraded = false;
     this.loadingGeometry = false;
     this.styleLoadHandler = null;
+    this.routeSyncTimer = null;
+    this.routeSyncAttempts = 0;
   }
 
   async mount() {
@@ -170,7 +159,6 @@ export class RouteMapEditor {
         }
       }
 
-      await waitUntilStyleReady(this.map);
       this.syncRouteLayer();
     } finally {
       this.loadingGeometry = false;
@@ -284,12 +272,17 @@ export class RouteMapEditor {
     if (this.map && this.styleLoadHandler) {
       this.map.off('style.load', this.styleLoadHandler);
     }
+    if (this.routeSyncTimer) {
+      clearTimeout(this.routeSyncTimer);
+    }
     this.map?.remove();
     this.geoman = null;
     this.map = null;
     this.degraded = false;
     this.loadingGeometry = false;
     this.styleLoadHandler = null;
+    this.routeSyncTimer = null;
+    this.routeSyncAttempts = 0;
   }
 
   handleFeatureChange(featureData) {
@@ -307,42 +300,61 @@ export class RouteMapEditor {
     }
   }
 
+  scheduleRouteLayerSync() {
+    if (!this.map || this.routeSyncTimer || this.routeSyncAttempts >= 40) return;
+
+    this.routeSyncAttempts += 1;
+    this.routeSyncTimer = setTimeout(() => {
+      this.routeSyncTimer = null;
+      this.syncRouteLayer();
+    }, 100);
+  }
+
   syncRouteLayer() {
-    if (!this.map || !this.map.isStyleLoaded()) {
-      return;
-    }
+    if (!this.map) return;
 
-    if (!this.geometry) {
-      if (this.map.getLayer(ROUTE_LAYER_ID)) this.map.removeLayer(ROUTE_LAYER_ID);
-      if (this.map.getSource(ROUTE_SOURCE_ID)) this.map.removeSource(ROUTE_SOURCE_ID);
-      return;
-    }
+    try {
+      if (!this.geometry) {
+        if (this.map.getLayer(ROUTE_LAYER_ID)) this.map.removeLayer(ROUTE_LAYER_ID);
+        if (this.map.getSource(ROUTE_SOURCE_ID)) this.map.removeSource(ROUTE_SOURCE_ID);
+        this.routeSyncAttempts = 0;
+        return;
+      }
 
-    const data = {
-      type: 'Feature',
-      properties: {},
-      geometry: this.geometry,
-    };
-    const source = this.map.getSource(ROUTE_SOURCE_ID);
-    if (source && typeof source.setData === 'function') {
-      source.setData(data);
-    } else {
-      this.map.addSource(ROUTE_SOURCE_ID, { type: 'geojson', data });
-      this.map.addLayer({
-        id: ROUTE_LAYER_ID,
-        type: 'line',
-        source: ROUTE_SOURCE_ID,
-        paint: {
-          'line-color': this.routeStyle.color,
-          'line-width': this.routeStyle.width,
-          'line-opacity': 0.8,
-        },
-      });
-    }
+      const data = {
+        type: 'Feature',
+        properties: {},
+        geometry: this.geometry,
+      };
 
-    if (this.map.getLayer(ROUTE_LAYER_ID)) {
+      const source = this.map.getSource(ROUTE_SOURCE_ID);
+      if (source && typeof source.setData === 'function') {
+        source.setData(data);
+      } else {
+        this.map.addSource(ROUTE_SOURCE_ID, { type: 'geojson', data });
+      }
+
+      if (!this.map.getLayer(ROUTE_LAYER_ID)) {
+        this.map.addLayer({
+          id: ROUTE_LAYER_ID,
+          type: 'line',
+          source: ROUTE_SOURCE_ID,
+          paint: {
+            'line-color': this.routeStyle.color,
+            'line-width': this.routeStyle.width,
+            'line-opacity': 0.8,
+          },
+        });
+      }
+
       this.map.setPaintProperty(ROUTE_LAYER_ID, 'line-color', this.routeStyle.color);
       this.map.setPaintProperty(ROUTE_LAYER_ID, 'line-width', this.routeStyle.width);
+      this.routeSyncAttempts = 0;
+    } catch (_) {
+      // MapLibre can briefly reject source/layer mutations while another
+      // control is updating the style. Retry for a bounded interval instead
+      // of silently losing an imported route.
+      this.scheduleRouteLayerSync();
     }
   }
 }
