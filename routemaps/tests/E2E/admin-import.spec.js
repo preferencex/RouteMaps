@@ -96,3 +96,37 @@ test('keeps editor zoom, fit and route deletion controls functional', async ({ p
   await expect(page.locator('[data-role="editor"]')).toBeHidden();
   await expect(page.locator('[data-role="empty-state"]')).toBeVisible();
 });
+
+
+test('toggles route draw and edit modes with explicit toolbar guidance', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop', 'Admin map modes only need one browser viewport.');
+
+  const missing = requiredEnv(prerequisites);
+  if (missing.length > 0 && process.env.CI) throw new Error(`Missing release E2E environment: ${missing.join(', ')}`);
+  test.skip(missing.length > 0, `Missing E2E environment: ${missing.join(', ')}`);
+
+  await loginWordPress(page, env('ROUTEMAPS_E2E_ADMIN_USER'), env('ROUTEMAPS_E2E_ADMIN_PASSWORD'));
+  await openRouteMapsAdmin(page);
+  await importFixtureRoute(page, importFixture);
+
+  await expect.poll(() => page.evaluate(() => Boolean(globalThis.RouteMapsAdminApp?.mapEditor?.geoman))).toBe(true);
+
+  await page.locator('[data-action="edit-route"]').click();
+  await expect.poll(() => page.evaluate(() => globalThis.RouteMapsAdminApp?.mapEditor?.isEditingRoute?.() || false)).toBe(true);
+  await expect(page.locator('[data-action="edit-route"]')).toHaveText('Terminar edição');
+  await expect(page.locator('[data-role="map-mode-hint"]')).toContainText('Arraste os vértices');
+
+  await page.locator('[data-action="edit-route"]').click();
+  await expect.poll(() => page.evaluate(() => globalThis.RouteMapsAdminApp?.mapEditor?.isEditingRoute?.() || false)).toBe(false);
+  await expect(page.locator('[data-action="edit-route"]')).toHaveText('Editar percurso');
+
+  await page.locator('[data-action="draw-route"]').click();
+  await expect.poll(() => page.evaluate(() => globalThis.RouteMapsAdminApp?.mapEditor?.isDrawingRoute?.() || false)).toBe(true);
+  await expect(page.locator('[data-action="draw-route"]')).toHaveText('Cancelar desenho');
+  await expect(page.locator('[data-role="map-mode-hint"]')).toContainText('duplo clique');
+
+  await page.locator('[data-action="draw-route"]').click();
+  await expect.poll(() => page.evaluate(() => globalThis.RouteMapsAdminApp?.mapEditor?.isDrawingRoute?.() || false)).toBe(false);
+  await expect(page.locator('[data-action="draw-route"]')).toHaveText('Desenhar percurso');
+  await expect(page.locator('[data-role="map-mode-hint"]')).toBeHidden();
+});
