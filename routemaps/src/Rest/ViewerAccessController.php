@@ -95,7 +95,7 @@ final class ViewerAccessController {
             $now
         ));
         if (!$decision->allowed() || null === $decision->license()) {
-            return $this->denied($decision->reason()?->value ?? AccessReason::INVALID_TOKEN->value);
+            return $this->denied($decision->reason()->value ?? AccessReason::INVALID_TOKEN->value);
         }
 
         $license = $decision->license();
