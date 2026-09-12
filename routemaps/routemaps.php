@@ -2,7 +2,7 @@
 /**
  * Plugin Name: RouteMaps
  * Description: Plataforma WordPress para criação, venda e utilização de roteiros digitais interativos.
- * Version: 0.1.2
+ * Version: 0.1.3
  * Requires at least: 6.8
  * Requires PHP: 8.2
  * Requires Plugins: woocommerce
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 define('ROUTEMAPS_FILE', __FILE__);
-define('ROUTEMAPS_VERSION', '0.1.2');
+define('ROUTEMAPS_VERSION', '0.1.3');
 
 $autoload = __DIR__ . '/vendor/autoload.php';
 

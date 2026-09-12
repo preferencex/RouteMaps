@@ -75,6 +75,7 @@ export class RouteMapEditor {
     this.styleLoadHandler = null;
     this.routeSyncTimer = null;
     this.routeSyncAttempts = 0;
+    this.options.onModeChange?.({ drawing: false, editing: false });
   }
 
   async mount() {
@@ -113,7 +114,7 @@ export class RouteMapEditor {
       this.geoman = null;
     }
 
-    this.map.on('gm:create', (event) => this.handleFeatureChange(event.feature));
+    this.map.on('gm:create', (event) => { void this.handleFeatureCreated(event.feature); });
     this.map.on('gm:changeend', (event) => this.handleFeatureChange(event.feature));
     this.map.on('gm:dragend', (event) => this.handleFeatureChange(event.feature));
     this.map.on('gm:remove', () => {
@@ -130,17 +131,47 @@ export class RouteMapEditor {
     return this.degraded;
   }
 
+  isDrawingRoute() {
+    return Boolean(this.geoman?.options?.isModeEnabled?.('draw', 'line'));
+  }
+
+  isEditingRoute() {
+    return Boolean(this.geoman?.options?.isModeEnabled?.('edit', 'change'));
+  }
+
+  notifyModeChange() {
+    this.options.onModeChange?.({
+      drawing: this.isDrawingRoute(),
+      editing: this.isEditingRoute(),
+    });
+  }
+
   async drawRoute() {
-    if (!this.geoman) return false;
-    if (this.geoman.options.isModeEnabled?.('edit', 'change')) {
+    if (!this.geoman) return null;
+
+    if (this.isDrawingRoute()) {
+      await this.geoman.options.disableMode('draw', 'line');
+      this.notifyModeChange();
+      return false;
+    }
+
+    if (this.isEditingRoute()) {
       await this.geoman.options.disableMode('edit', 'change');
     }
+
     await this.geoman.options.enableMode('draw', 'line');
+    this.notifyModeChange();
     return true;
   }
 
   async editRoute() {
-    if (!this.geoman || !this.geometry) return false;
+    if (!this.geoman || !this.geometry) return null;
+
+    if (this.isEditingRoute()) {
+      await this.geoman.options.disableMode('edit', 'change');
+      this.notifyModeChange();
+      return false;
+    }
 
     const collection = this.geoman.features?.exportGeoJson?.();
     const hasEditableLine = collection?.features?.some(
@@ -155,14 +186,15 @@ export class RouteMapEditor {
           geometry: this.geometry,
         });
       } catch (_) {
-        return false;
+        return null;
       }
     }
 
-    if (this.geoman.options.isModeEnabled?.('draw', 'line')) {
+    if (this.isDrawingRoute()) {
       await this.geoman.options.disableMode('draw', 'line');
     }
     await this.geoman.options.enableMode('edit', 'change');
+    this.notifyModeChange();
     return true;
   }
 
@@ -313,6 +345,17 @@ export class RouteMapEditor {
     this.styleLoadHandler = null;
     this.routeSyncTimer = null;
     this.routeSyncAttempts = 0;
+  }
+
+  async handleFeatureCreated(featureData) {
+    const wasDrawing = this.isDrawingRoute();
+    this.handleFeatureChange(featureData);
+
+    if (wasDrawing && this.geoman) {
+      await this.geoman.options.disableMode('draw', 'line');
+      this.notifyModeChange();
+      this.options.onDrawComplete?.(this.geometry);
+    }
   }
 
   handleFeatureChange(featureData) {

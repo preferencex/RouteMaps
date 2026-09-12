@@ -94,6 +94,7 @@ class RouteMapsAdminApp {
                     <button type="button" class="button" data-action="edit-route">${__('Editar percurso')}</button>
                     <button type="button" class="button" data-action="add-stop">${__('Adicionar paragem')}</button>
                     <button type="button" class="button" data-action="fit-route">${__('Enquadrar')}</button>
+                    <span class="routemaps-map-mode-hint" data-role="map-mode-hint" hidden></span>
                   </div>
                   <div id="routemaps-editor-map" class="routemaps-editor-map"></div>
                 </div>
@@ -162,26 +163,32 @@ class RouteMapsAdminApp {
     this.root.querySelector('[data-action="import"]').addEventListener('click', () => this.openImportDialog());
     this.root.querySelector('[data-action="draw-route"]').addEventListener('click', async () => {
       try {
-        const enabled = await this.mapEditor?.drawRoute();
-        this.showStatus(
-          enabled
-            ? __('Modo de desenho ativo. Clique no mapa para adicionar os vértices do percurso e termine o desenho no último ponto.')
-            : __('O modo de desenho não está disponível neste momento.'),
-          enabled ? 'success' : 'warning'
-        );
+        const active = await this.mapEditor?.drawRoute();
+        this.syncMapModeControls();
+
+        if (active === null || active === undefined) {
+          this.showStatus(__('O modo de desenho não está disponível neste momento.'), 'warning');
+        } else if (active) {
+          this.showStatus(__('Modo de desenho ativo. Clique no mapa para adicionar vértices e faça duplo clique no último ponto para concluir.'), 'success');
+        } else {
+          this.showStatus(__('Desenho cancelado.'), 'warning');
+        }
       } catch (error) {
         this.showStatus(this.message(error), 'error');
       }
     });
     this.root.querySelector('[data-action="edit-route"]').addEventListener('click', async () => {
       try {
-        const enabled = await this.mapEditor?.editRoute();
-        this.showStatus(
-          enabled
-            ? __('Modo de edição ativo. Arraste os vértices do percurso para alterar a geometria.')
-            : __('Não existe um percurso editável nesta rota.'),
-          enabled ? 'success' : 'warning'
-        );
+        const active = await this.mapEditor?.editRoute();
+        this.syncMapModeControls();
+
+        if (active === null || active === undefined) {
+          this.showStatus(__('Não existe um percurso editável nesta rota.'), 'warning');
+        } else if (active) {
+          this.showStatus(__('Modo de edição ativo. Arraste os vértices do percurso para alterar a geometria.'), 'success');
+        } else {
+          this.showStatus(__('Edição terminada.'), 'success');
+        }
       } catch (error) {
         this.showStatus(this.message(error), 'error');
       }
@@ -346,6 +353,32 @@ class RouteMapsAdminApp {
     }
   }
 
+  syncMapModeControls() {
+    const drawButton = this.root.querySelector('[data-action="draw-route"]');
+    const editButton = this.root.querySelector('[data-action="edit-route"]');
+    const hint = this.root.querySelector('[data-role="map-mode-hint"]');
+    if (!drawButton || !editButton || !hint) return;
+
+    const drawing = Boolean(this.mapEditor?.isDrawingRoute?.());
+    const editing = Boolean(this.mapEditor?.isEditingRoute?.());
+
+    drawButton.textContent = drawing ? __('Cancelar desenho') : __('Desenhar percurso');
+    editButton.textContent = editing ? __('Terminar edição') : __('Editar percurso');
+    drawButton.classList.toggle('button-primary', drawing);
+    editButton.classList.toggle('button-primary', editing);
+
+    if (drawing) {
+      hint.hidden = false;
+      hint.textContent = __('Clique para criar vértices · duplo clique no último ponto para concluir.');
+    } else if (editing) {
+      hint.hidden = false;
+      hint.textContent = __('Arraste os vértices do percurso · clique em “Terminar edição” quando concluir.');
+    } else {
+      hint.hidden = true;
+      hint.textContent = '';
+    }
+  }
+
   normalizeDraft(data, fallbackTitle) {
     return {
       ...emptyDraft(fallbackTitle),
@@ -385,10 +418,16 @@ class RouteMapsAdminApp {
       onGeometryChange: (geometry) => { this.draft.geometry = geometry; },
       onStopAdd: (coordinates) => this.addStop(coordinates),
       onStopMove: (stopUuid, coordinates) => this.moveStop(stopUuid, coordinates),
+      onModeChange: () => this.syncMapModeControls(),
+      onDrawComplete: () => {
+        this.syncMapModeControls();
+        this.showStatus(__('Percurso concluído. Pode agora editar, guardar ou publicar a rota.'), 'success');
+      },
     });
 
     try {
       await this.mapEditor.mount();
+      this.syncMapModeControls();
 
       // Stops and POIs are independent from route-line editing. Render them
       // first so a geometry/Geoman problem can never hide imported points.

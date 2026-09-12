@@ -42,6 +42,8 @@
 .routemaps-workspace { display: grid; grid-template-columns: minmax(0, 1fr) 340px; background: #fff; border: 1px solid var(--rt-border); border-radius: 10px; overflow: hidden; min-height: 680px; }
 .routemaps-map-column { min-width: 0; display: grid; grid-template-rows: auto 1fr; }
 .routemaps-map-toolbar { padding: 10px 12px; border-bottom: 1px solid var(--rt-border); background: #fbfcfd; }
+.routemaps-map-mode-hint { flex: 1 1 280px; min-width: 220px; color: var(--rt-muted); font-size: 11px; line-height: 1.35; }
+.routemaps-map-toolbar .button-primary { box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); }
 .routemaps-editor-map { min-height: 620px; width: 100%; }
 .routemaps-map-crosshair { cursor: crosshair !important; }
 .routemaps-properties { border-left: 1px solid var(--rt-border); background: #fbfcfd; overflow: auto; max-height: 680px; }
