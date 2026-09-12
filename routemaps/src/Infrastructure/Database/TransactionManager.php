@@ -8,6 +8,8 @@ use Throwable;
 use wpdb;
 
 final class TransactionManager {
+    private static int $savepointSequence = 0;
+
     public function __construct(private wpdb $db) {
     }
 
@@ -17,15 +19,32 @@ final class TransactionManager {
      * @return T
      */
     public function run(callable $callback): mixed {
-        $this->db->query('START TRANSACTION');
+        $nested = 1 === (int) $this->db->get_var('SELECT @@in_transaction');
+        $savepoint = null;
+
+        if ($nested) {
+            $savepoint = 'routemaps_' . (++self::$savepointSequence);
+            $this->db->query("SAVEPOINT {$savepoint}");
+        } else {
+            $this->db->query('START TRANSACTION');
+        }
 
         try {
             $result = $callback();
-            $this->db->query('COMMIT');
+            if (null !== $savepoint) {
+                $this->db->query("RELEASE SAVEPOINT {$savepoint}");
+            } else {
+                $this->db->query('COMMIT');
+            }
 
             return $result;
         } catch (Throwable $throwable) {
-            $this->db->query('ROLLBACK');
+            if (null !== $savepoint) {
+                $this->db->query("ROLLBACK TO SAVEPOINT {$savepoint}");
+                $this->db->query("RELEASE SAVEPOINT {$savepoint}");
+            } else {
+                $this->db->query('ROLLBACK');
+            }
             throw $throwable;
         }
     }

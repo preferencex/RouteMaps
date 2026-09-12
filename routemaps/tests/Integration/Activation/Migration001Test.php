@@ -36,7 +36,7 @@ final class Migration001Test extends WP_UnitTestCase {
             }
         }
 
-        self::assertContains(['route_id', 'version_number'], array_values($uniqueColumns), true);
+        self::assertContains(['route_id', 'version_number'], array_values($uniqueColumns));
         self::assertSame(1, (int) get_option('routemaps_db_version'));
     }
 

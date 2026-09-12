@@ -73,7 +73,7 @@ final class AdminRoutesRestTest extends WP_UnitTestCase {
         $publish = new WP_REST_Request('POST', '/routemaps/v1/admin/routes/' . $route['id'] . '/publish');
         self::assertSame(403, rest_do_request($publish)->get_status());
 
-        get_role('routemaps_test_editor')?->add_cap('publish_routemaps_routes');
+        wp_get_current_user()->add_cap('publish_routemaps_routes');
         $publish->set_param('critical', true);
         $publish->set_param('summary', 'Primeira publicação');
         $published = rest_do_request($publish);
@@ -112,7 +112,7 @@ final class AdminRoutesRestTest extends WP_UnitTestCase {
 
     public function test_editor_can_list_and_read_immutable_published_versions(): void {
         wp_set_current_user($this->editorUserId);
-        get_role('routemaps_test_editor')?->add_cap('publish_routemaps_routes');
+        wp_get_current_user()->add_cap('publish_routemaps_routes');
 
         $create = new WP_REST_Request('POST', '/routemaps/v1/admin/routes');
         $create->set_param('title', 'Versioned Route');

@@ -27,9 +27,9 @@ final class LoginRewriteTest extends WP_UnitTestCase {
         global $wp_rewrite;
         $rules = $wp_rewrite->extra_rules_top;
 
-        self::assertArrayHasKey('routemaps/access/([0-9a-f]{64})/?$', $rules);
-        self::assertArrayHasKey('routemaps/login/?$', $rules);
-        self::assertArrayHasKey('routemaps/invite/([0-9a-f]{64})/?$', $rules);
+        self::assertArrayHasKey('^routemaps/access/([0-9a-f]{64})/?$', $rules);
+        self::assertArrayHasKey('^routemaps/login/?$', $rules);
+        self::assertArrayHasKey('^routemaps/invite/([0-9a-f]{64})/?$', $rules);
     }
 
     public function test_login_continuation_is_opaque_internal_and_remember_is_forwarded_to_wp_signon(): void {

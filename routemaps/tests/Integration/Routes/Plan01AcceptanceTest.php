@@ -18,6 +18,7 @@ final class Plan01AcceptanceTest extends WP_UnitTestCase {
     public function test_foundation_preserves_published_versions_across_critical_update(): void {
         global $wpdb;
 
+        delete_option('routemaps_db_version');
         Activation::activate();
         $wpdb->query('DELETE FROM ' . $wpdb->prefix . 'routemaps_route_versions');
         $wpdb->query('DELETE FROM ' . $wpdb->prefix . 'routemaps_routes');

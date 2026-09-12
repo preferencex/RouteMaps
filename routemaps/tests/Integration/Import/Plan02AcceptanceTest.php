@@ -74,7 +74,7 @@ final class Plan02AcceptanceTest extends WP_UnitTestCase {
         ], get_current_user_id());
 
         $inspect = rest_do_request($this->inspectRequest($this->fixtureUpload('google-my-maps.kml')));
-        self::assertSame(200, $inspect->get_status());
+        self::assertSame(200, $inspect->get_status(), (string) wp_json_encode($inspect->get_data()));
         self::assertSame('kml', $inspect->get_data()['preview']['format']);
         self::assertSame('Douro My Maps', $inspect->get_data()['preview']['title']);
 
