@@ -6,3 +6,17 @@ parameters:
     paths:
         - src
     tmpDir: .phpstan-cache
+
+    # WordPress/WooCommerce APIs carry PHPDoc that is sometimes narrower than
+    # the runtime contracts accepted by plugin integrations.
+    treatPhpDocTypesAsCertain: false
+
+    stubFiles:
+        - phpstan-stubs/woocommerce.stub.php
+        - phpstan-stubs/routemaps.stub.php
+
+    # Generic iterable annotations are being tightened incrementally. Keep
+    # level 6 for all other type/flow checks during the Core release gate.
+    ignoreErrors:
+        -
+            identifier: missingType.iterableValue
