@@ -1,7 +1,11 @@
 import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 
-const browserDefines = {\n  'process.env.NODE_ENV': JSON.stringify('production'),\n};\n\nconst testConfig = {
+const browserDefines = {
+  'process.env.NODE_ENV': JSON.stringify('production'),
+};
+
+const testConfig = {
   environment: 'node',
   include: [
     'assets-src/admin/__tests__/**/*.test.js',
@@ -13,6 +17,7 @@ const browserDefines = {\n  'process.env.NODE_ENV': JSON.stringify('production')
 export default defineConfig(({ mode }) => {
   if (mode === 'pwa') {
     return {
+      define: browserDefines,
       build: {
         outDir: resolve(import.meta.dirname, 'assets/pwa'),
         emptyOutDir: true,
@@ -30,6 +35,7 @@ export default defineConfig(({ mode }) => {
 
   if (mode === 'viewer') {
     return {
+      define: browserDefines,
       build: {
         outDir: resolve(import.meta.dirname, 'assets/viewer'),
         emptyOutDir: true,
@@ -53,6 +59,7 @@ export default defineConfig(({ mode }) => {
   }
 
   return {
+    define: browserDefines,
     build: {
       outDir: resolve(import.meta.dirname, 'assets/admin'),
       emptyOutDir: true,
