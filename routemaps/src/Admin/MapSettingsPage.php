@@ -38,7 +38,7 @@ final class MapSettingsPage {
         check_admin_referer('routemaps_map_settings');
 
         try {
-            $this->settings->save(is_array($_POST) ? wp_unslash($_POST) : []);
+            $this->settings->save(wp_unslash($_POST));
             $status = 'updated';
         } catch (InvalidArgumentException $error) {
             $status = $error->getMessage();
