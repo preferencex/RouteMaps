@@ -2,7 +2,17 @@ import { Geoman } from '@geoman-io/maplibre-geoman-free';
 import { Map, Marker, NavigationControl, setWorkerUrl } from 'maplibre-gl';
 import mapLibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 
-setWorkerUrl(mapLibreWorkerUrl);
+const mapLibreWorkerFile = String(mapLibreWorkerUrl).split('/').filter(Boolean).at(-1) || '';
+
+const resolveMapLibreWorkerUrl = (assetBaseUrl) => {
+  if (!assetBaseUrl || !mapLibreWorkerFile) return mapLibreWorkerUrl;
+
+  try {
+    return new URL(`assets/${mapLibreWorkerFile}`, assetBaseUrl).href;
+  } catch (_) {
+    return mapLibreWorkerUrl;
+  }
+};
 
 const ROUTE_SOURCE_ID = 'routemaps-route-preview';
 const ROUTE_LAYER_ID = 'routemaps-route-preview-line';
@@ -79,6 +89,8 @@ export class RouteMapEditor {
   }
 
   async mount() {
+    setWorkerUrl(resolveMapLibreWorkerUrl(this.options.assetBaseUrl));
+
     this.map = new Map({
       container: this.container,
       style: this.options.styleUrl || 'https://tiles.openfreemap.org/styles/liberty',
