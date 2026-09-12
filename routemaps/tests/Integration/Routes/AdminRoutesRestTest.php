@@ -110,6 +110,44 @@ final class AdminRoutesRestTest extends WP_UnitTestCase {
     }
 
 
+    public function test_editor_can_delete_route_and_its_versions_when_not_in_use(): void {
+        wp_set_current_user($this->editorUserId);
+        wp_get_current_user()->add_cap('publish_routemaps_routes');
+
+        $create = new WP_REST_Request('POST', '/routemaps/v1/admin/routes');
+        $create->set_param('title', 'Disposable Route');
+        $route = rest_do_request($create)->get_data();
+        $routeId = (int) $route['id'];
+
+        $draft = new WP_REST_Request('PUT', '/routemaps/v1/admin/routes/' . $routeId . '/draft');
+        $draft->set_body_params($this->draftPayload());
+        self::assertSame(200, rest_do_request($draft)->get_status());
+        self::assertSame(
+            200,
+            rest_do_request(new WP_REST_Request('POST', '/routemaps/v1/admin/routes/' . $routeId . '/publish'))->get_status()
+        );
+
+        $delete = rest_do_request(new WP_REST_Request('DELETE', '/routemaps/v1/admin/routes/' . $routeId));
+        self::assertSame(200, $delete->get_status());
+        self::assertTrue((bool) ($delete->get_data()['deleted'] ?? false));
+
+        self::assertSame(
+            404,
+            rest_do_request(new WP_REST_Request('GET', '/routemaps/v1/admin/routes/' . $routeId))->get_status()
+        );
+
+        global $wpdb;
+        self::assertSame(
+            0,
+            (int) $wpdb->get_var(
+                $wpdb->prepare(
+                    'SELECT COUNT(*) FROM ' . $wpdb->prefix . 'routemaps_route_versions WHERE route_id = %d',
+                    $routeId
+                )
+            )
+        );
+    }
+
     public function test_editor_can_list_and_read_immutable_published_versions(): void {
         wp_set_current_user($this->editorUserId);
         wp_get_current_user()->add_cap('publish_routemaps_routes');

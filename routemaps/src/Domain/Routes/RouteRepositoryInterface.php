@@ -13,4 +13,5 @@ interface RouteRepositoryInterface {
     public function list(int $limit = 100, int $offset = 0): array;
 
     public function updatePublishedVersion(int $routeId, int $versionId): Route;
+    public function delete(int $routeId): void;
 }

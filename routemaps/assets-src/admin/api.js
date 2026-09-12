@@ -46,6 +46,7 @@ export const createApi = (config) => {
     listRoutes: () => request('/admin/routes?per_page=100&offset=0'),
     getRoute: (id) => request(`/admin/routes/${id}`),
     createRoute: (title) => request('/admin/routes', { method: 'POST', body: { title } }),
+    deleteRoute: (id) => request(`/admin/routes/${id}`, { method: 'DELETE' }),
     saveDraft: (id, draft) => request(`/admin/routes/${id}/draft`, { method: 'PUT', body: draft }),
     publishRoute: (id, critical = false, summary = null) => request(`/admin/routes/${id}/publish`, {
       method: 'POST',

@@ -110,6 +110,17 @@ final class WpdbRouteRepository implements RouteRepositoryInterface {
         return $route;
     }
 
+    public function delete(int $routeId): void {
+        $deleted = $this->db->delete($this->table, ['id' => $routeId], ['%d']);
+
+        if (false === $deleted) {
+            throw new RuntimeException('route_delete_failed');
+        }
+        if (0 === $deleted) {
+            throw new RuntimeException('route_not_found');
+        }
+    }
+
     private function uniqueSlug(string $title): string {
         $base = sanitize_title($title);
         if ('' === $base) {
