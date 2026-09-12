@@ -160,10 +160,46 @@ class RouteMapsAdminApp {
   bindShellEvents() {
     this.root.querySelector('[data-action="new-route"]').addEventListener('click', () => this.openNewRouteDialog());
     this.root.querySelector('[data-action="import"]').addEventListener('click', () => this.openImportDialog());
-    this.root.querySelector('[data-action="draw-route"]').addEventListener('click', () => this.mapEditor?.drawRoute());
-    this.root.querySelector('[data-action="edit-route"]').addEventListener('click', () => this.mapEditor?.editRoute());
-    this.root.querySelector('[data-action="add-stop"]').addEventListener('click', () => this.mapEditor?.startStopPlacement());
-    this.root.querySelector('[data-action="fit-route"]').addEventListener('click', () => this.mapEditor?.fitToGeometry());
+    this.root.querySelector('[data-action="draw-route"]').addEventListener('click', async () => {
+      try {
+        const enabled = await this.mapEditor?.drawRoute();
+        this.showStatus(
+          enabled
+            ? __('Modo de desenho ativo. Clique no mapa para adicionar os vértices do percurso e termine o desenho no último ponto.')
+            : __('O modo de desenho não está disponível neste momento.'),
+          enabled ? 'success' : 'warning'
+        );
+      } catch (error) {
+        this.showStatus(this.message(error), 'error');
+      }
+    });
+    this.root.querySelector('[data-action="edit-route"]').addEventListener('click', async () => {
+      try {
+        const enabled = await this.mapEditor?.editRoute();
+        this.showStatus(
+          enabled
+            ? __('Modo de edição ativo. Arraste os vértices do percurso para alterar a geometria.')
+            : __('Não existe um percurso editável nesta rota.'),
+          enabled ? 'success' : 'warning'
+        );
+      } catch (error) {
+        this.showStatus(this.message(error), 'error');
+      }
+    });
+    this.root.querySelector('[data-action="add-stop"]').addEventListener('click', () => {
+      const enabled = this.mapEditor?.startStopPlacement();
+      this.showStatus(
+        enabled ? __('Clique no mapa para posicionar a nova paragem.') : __('O mapa não está disponível para adicionar paragens.'),
+        enabled ? 'success' : 'warning'
+      );
+    });
+    this.root.querySelector('[data-action="fit-route"]').addEventListener('click', () => {
+      const fitted = this.mapEditor?.fitToGeometry(this.draft.geometry);
+      this.showStatus(
+        fitted ? __('Percurso enquadrado no mapa.') : __('Não existe geometria suficiente para enquadrar.'),
+        fitted ? 'success' : 'warning'
+      );
+    });
     this.root.querySelector('[data-action="save"]').addEventListener('click', () => this.saveDraft());
     this.root.querySelector('[data-action="publish"]').addEventListener('click', () => this.publishRoute());
     this.root.querySelector('[data-action="preview"]').addEventListener('click', () => this.togglePreview());
@@ -228,16 +264,33 @@ class RouteMapsAdminApp {
     }
 
     this.routes.forEach((route) => {
+      const row = document.createElement('div');
+      row.className = `routemaps-route-row${this.currentRoute?.id === route.id ? ' is-active' : ''}`;
+
       const button = document.createElement('button');
       button.type = 'button';
-      button.className = `routemaps-route-item${this.currentRoute?.id === route.id ? ' is-active' : ''}`;
+      button.className = 'routemaps-route-item';
       const title = document.createElement('strong');
       title.textContent = route.title;
       const meta = document.createElement('span');
       meta.textContent = route.status === 'published' ? __('Publicada') : __('Rascunho');
       button.append(title, meta);
       button.addEventListener('click', () => this.selectRoute(route.id));
-      list.append(button);
+
+      const remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'button-link-delete routemaps-route-delete';
+      remove.textContent = '×';
+      remove.title = __('Eliminar rota');
+      remove.setAttribute('aria-label', sprintf(__('Eliminar rota “%s”'), route.title));
+      remove.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        void this.deleteRoute(route);
+      });
+
+      row.append(button, remove);
+      list.append(row);
     });
   }
 
@@ -250,6 +303,33 @@ class RouteMapsAdminApp {
       await this.selectRoute(route.id);
     } catch (error) {
       this.showStatus(this.message(error), 'error');
+    }
+  }
+
+  async deleteRoute(route) {
+    if (!route?.id) return;
+
+    const confirmed = window.confirm(
+      sprintf(__('Eliminar definitivamente a rota “%s”?\n\nEsta ação elimina também os rascunhos e versões guardadas. Rotas associadas a produtos ou licenças são protegidas.'), route.title)
+    );
+    if (!confirmed) return;
+
+    try {
+      await this.api.deleteRoute(route.id);
+
+      if (this.currentRoute?.id === route.id) {
+        this.mapEditor?.destroy();
+        this.mapEditor = null;
+        this.currentRoute = null;
+        this.draft = emptyDraft();
+        this.root.querySelector('[data-role="editor"]').hidden = true;
+        this.root.querySelector('[data-role="empty-state"]').hidden = false;
+      }
+
+      await this.loadRoutes();
+    } catch (error) {
+      this.showStatus(this.message(error), 'error');
+      window.alert(this.message(error));
     }
   }
 
