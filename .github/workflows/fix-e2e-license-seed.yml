@@ -1,0 +1,45 @@
+name: Fix RouteMaps E2E license seed
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/fix-e2e-license-seed.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix-seed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout work branch
+        uses: actions/checkout@v4
+        with:
+          ref: work/ci-fixes-1
+          fetch-depth: 0
+
+      - name: Make seeded license issuance deterministic
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('routemaps/tests/E2E/ci-seed.php')
+          text = path.read_text()
+          dollar = chr(36)
+          marker = "    " + dollar + "order->payment_complete('routemaps-ci');"
+          injected = "    do_action('woocommerce_payment_complete', " + dollar + "order->get_id());"
+          if injected in text:
+              raise SystemExit('Seed already updated')
+          if marker not in text:
+              raise SystemExit('Expected marker not found')
+          path.write_text(text.replace(marker, marker + '\n' + injected, 1))
+          PY
+          git diff --check
+          git config user.name 'RouteMaps CI Bootstrap'
+          git config user.email 'actions@users.noreply.github.com'
+          git add routemaps/tests/E2E/ci-seed.php
+          git commit -m 'ci: issue deterministic licenses in E2E seed'
+          git push origin HEAD:work/ci-fixes-1
