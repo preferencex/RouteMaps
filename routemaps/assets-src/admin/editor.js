@@ -83,6 +83,7 @@ export class RouteMapEditor {
       style: this.options.styleUrl || 'https://tiles.openfreemap.org/styles/liberty',
       center: this.options.center || [-8.2, 39.7],
       zoom: Number.isFinite(this.options.zoom) ? this.options.zoom : 6,
+      maxZoom: 18,
       attributionControl: true,
     });
     this.map.addControl(new NavigationControl({ visualizePitch: true }), 'top-right');
@@ -130,13 +131,39 @@ export class RouteMapEditor {
   }
 
   async drawRoute() {
-    if (!this.geoman) return;
+    if (!this.geoman) return false;
+    if (this.geoman.options.isModeEnabled?.('edit', 'change')) {
+      await this.geoman.options.disableMode('edit', 'change');
+    }
     await this.geoman.options.enableMode('draw', 'line');
+    return true;
   }
 
   async editRoute() {
-    if (!this.geoman) return;
+    if (!this.geoman || !this.geometry) return false;
+
+    const collection = this.geoman.features?.exportGeoJson?.();
+    const hasEditableLine = collection?.features?.some(
+      (feature) => ['LineString', 'MultiLineString'].includes(feature?.geometry?.type)
+    );
+
+    if (!hasEditableLine) {
+      try {
+        await this.geoman.features.importGeoJson({
+          type: 'Feature',
+          properties: { routemaps_role: 'route' },
+          geometry: this.geometry,
+        });
+      } catch (_) {
+        return false;
+      }
+    }
+
+    if (this.geoman.options.isModeEnabled?.('draw', 'line')) {
+      await this.geoman.options.disableMode('draw', 'line');
+    }
     await this.geoman.options.enableMode('edit', 'change');
+    return true;
   }
 
   async loadGeometry(geometry) {
@@ -210,7 +237,7 @@ export class RouteMapEditor {
   }
 
   startStopPlacement() {
-    if (!this.map) return;
+    if (!this.map) return false;
     this.stopPlacementHandler?.();
     this.map.getCanvas().classList.add('routemaps-map-crosshair');
 
@@ -226,6 +253,7 @@ export class RouteMapEditor {
       this.map.off('click', handler);
       this.map.getCanvas().classList.remove('routemaps-map-crosshair');
     };
+    return true;
   }
 
   viewport() {
@@ -240,11 +268,11 @@ export class RouteMapEditor {
   }
 
   fitToGeometry(geometry = this.geometry) {
-    if (!this.map || !geometry) return;
+    if (!this.map || !geometry) return false;
     const coordinates = geometry.type === 'LineString'
       ? geometry.coordinates
       : geometry.coordinates.flat();
-    if (!Array.isArray(coordinates) || coordinates.length === 0) return;
+    if (!Array.isArray(coordinates) || coordinates.length === 0) return false;
 
     let minLng = Infinity;
     let minLat = Infinity;
@@ -259,7 +287,9 @@ export class RouteMapEditor {
     });
     if (Number.isFinite(minLng)) {
       this.map.fitBounds([[minLng, minLat], [maxLng, maxLat]], { padding: 70, maxZoom: 14, duration: 500 });
+      return true;
     }
+    return false;
   }
 
   destroy() {
