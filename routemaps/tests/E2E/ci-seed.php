@@ -148,6 +148,7 @@ function routemaps_ci_license(array $route, WP_User $owner, ?int $maxOpenings, i
     $order->calculate_totals();
     $order->save();
     $order->payment_complete('routemaps-ci');
+    do_action('woocommerce_payment_complete', $order->get_id());
 
     $license = $wpdb->get_row($wpdb->prepare(
         "SELECT * FROM {$wpdb->prefix}routemaps_licenses WHERE order_id = %d ORDER BY id DESC LIMIT 1",
