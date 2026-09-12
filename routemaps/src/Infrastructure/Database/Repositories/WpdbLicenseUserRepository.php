@@ -28,7 +28,7 @@ final class WpdbLicenseUserRepository implements LicenseUserRepositoryInterface 
         if (!in_array($role, ['owner', 'guest'], true) || !in_array($status, ['active', 'pending', 'revoked'], true)) {
             throw new InvalidArgumentException('license_user_state_invalid');
         }
-        $tokenHash = isset($data['invite_token_hash']) && null !== $data['invite_token_hash']
+        $tokenHash = isset($data['invite_token_hash'])
             ? strtolower(trim((string) $data['invite_token_hash']))
             : null;
         if (null !== $tokenHash && 1 !== preg_match('/^[0-9a-f]{64}$/', $tokenHash)) {
@@ -37,7 +37,7 @@ final class WpdbLicenseUserRepository implements LicenseUserRepositoryInterface 
         $now = current_time('mysql', true);
         $inserted = $this->db->insert($this->table, [
             'license_id' => $licenseId,
-            'user_id' => isset($data['user_id']) && null !== $data['user_id'] ? (int) $data['user_id'] : null,
+            'user_id' => isset($data['user_id']) ? (int) $data['user_id'] : null,
             'email' => $email,
             'role' => $role,
             'status' => $status,
