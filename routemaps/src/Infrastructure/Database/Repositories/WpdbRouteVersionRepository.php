@@ -215,6 +215,14 @@ final class WpdbRouteVersionRepository implements RouteVersionRepositoryInterfac
         return $version;
     }
 
+    public function deleteForRoute(int $routeId): void {
+        $deleted = $this->db->delete($this->table, ['route_id' => $routeId], ['%d']);
+
+        if (false === $deleted) {
+            throw new RuntimeException('route_versions_delete_failed');
+        }
+    }
+
     /** @param array<string,mixed> $row */
     private function hydrate(array $row): RouteVersion {
         return new RouteVersion(
