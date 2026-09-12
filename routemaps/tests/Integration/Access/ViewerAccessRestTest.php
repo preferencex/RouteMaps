@@ -154,7 +154,8 @@ final class ViewerAccessRestTest extends WP_UnitTestCase {
         $members = new WpdbLicenseUserRepository($wpdb);
         $sessions = new WpdbAccessSessionRepository($wpdb);
         $events = new WpdbAccessEventRepository($wpdb);
-        $owner = self::factory()->user->create(['user_email' => 'owner-rest@example.test']);
+        $owner = self::factory()->user->create();
+        $ownerEmail = (string) get_userdata($owner)?->user_email;
         $route = $routes->create('REST Route', $owner);
         $draft = $versions->createDraft($route->id(), 1, '{"geometry":null,"stops":[]}', $owner);
         $versions->updateSnapshot($draft->id(), $draft->snapshotJson(), hash('sha256', $draft->snapshotJson()));
@@ -167,7 +168,7 @@ final class ViewerAccessRestTest extends WP_UnitTestCase {
             'validity_mode' => $mode, 'validity_days' => $mode === ValidityMode::DAYS_FROM_FIRST_USE ? 7 : null,
             'max_openings' => 3, 'openings_used' => 0, 'sharing_enabled' => true, 'max_shares' => 1,
         ]);
-        $members->create(['license_id'=>$license->id(),'user_id'=>$owner,'email'=>'owner-rest@example.test','role'=>'owner','status'=>'active']);
+        $members->create(['license_id'=>$license->id(),'user_id'=>$owner,'email'=>$ownerEmail,'role'=>'owner','status'=>'active']);
         $validity = new LicenseValidityService();
         $tokens = new TokenService();
         $decision = new AccessDecisionService($licenses, $members, $sessions, $events, $validity, $tokens);
