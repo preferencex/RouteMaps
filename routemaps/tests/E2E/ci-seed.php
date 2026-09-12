@@ -4,7 +4,6 @@
  * Run only inside the wp-env CI installation using WP-CLI eval-file.
  */
 
-declare(strict_types=1);
 
 use RouteMaps\Core\Infrastructure\Database\Repositories\WpdbRouteRepository;
 use RouteMaps\Core\Maps\MapSettings;
