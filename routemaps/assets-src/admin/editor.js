@@ -71,6 +71,7 @@ export class RouteMapEditor {
     this.geometry = null;
     this.routeStyle = { color: '#00A099', width: 4 };
     this.degraded = false;
+    this.loadingGeometry = false;
   }
 
   async mount() {
@@ -109,6 +110,7 @@ export class RouteMapEditor {
     this.map.on('gm:changeend', (event) => this.handleFeatureChange(event.feature));
     this.map.on('gm:dragend', (event) => this.handleFeatureChange(event.feature));
     this.map.on('gm:remove', () => {
+      if (this.loadingGeometry) return;
       const collection = this.geoman?.features?.exportGeoJson?.();
       const line = collection?.features?.find((feature) => ['LineString', 'MultiLineString'].includes(feature?.geometry?.type));
       this.setGeometry(line?.geometry || null, true);
@@ -132,19 +134,25 @@ export class RouteMapEditor {
   }
 
   async loadGeometry(geometry) {
-    if (this.geoman) {
-      await this.geoman.features.deleteAll();
-    }
+    this.loadingGeometry = true;
+    try {
+      if (this.geoman) {
+        await this.geoman.features.deleteAll();
+      }
 
-    this.setGeometry(geometry || null, false);
+      if (this.geoman && geometry && ['LineString', 'MultiLineString'].includes(geometry.type)) {
+        await this.geoman.features.importGeoJson({
+          type: 'Feature',
+          properties: { routemaps_role: 'route' },
+          geometry,
+        });
+      }
 
-    if (!this.geoman) return;
-    if (geometry && ['LineString', 'MultiLineString'].includes(geometry.type)) {
-      await this.geoman.features.importGeoJson({
-        type: 'Feature',
-        properties: { routemaps_role: 'route' },
-        geometry,
-      });
+      // Geoman can emit remove/create events while resetting its feature store.
+      // Reassert the canonical RouteMaps geometry after that cycle has completed.
+      this.setGeometry(geometry || null, false);
+    } finally {
+      this.loadingGeometry = false;
     }
   }
 
@@ -256,6 +264,7 @@ export class RouteMapEditor {
     this.geoman = null;
     this.map = null;
     this.degraded = false;
+    this.loadingGeometry = false;
   }
 
   handleFeatureChange(featureData) {
