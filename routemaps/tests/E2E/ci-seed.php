@@ -213,7 +213,7 @@ function routemaps_ci_wc_keys(int $userId): array {
 update_option('routemaps_ci_mail_messages', [], false);
 
 $admin = routemaps_ci_user('admin', 'admin@example.test', 'password', 'administrator');
-$buyer = routemaps_ci_user('routemaps_buyer', 'buyer@example.test', $password);
+$buyer = routemaps_ci_user('routemaps_buyer', 'buyer@example.test', $password, 'customer');
 $owner = routemaps_ci_user('routemaps_owner', 'owner@example.test', $password);
 $guest = routemaps_ci_user('routemaps_guest', 'guest@example.test', $password);
 
