@@ -45,21 +45,25 @@ foreach ([
     delete_option($option);
 }
 
-$transientPatterns = [
-    '_transient_routemaps_rl_',
-    '_transient_timeout_routemaps_rl_',
-    '_transient_routemaps_import_',
-    '_transient_timeout_routemaps_import_',
+$transientPrefixes = [
+    'routemaps_rl_',
+    'routemaps_import_',
 ];
-$where = [];
-$params = [];
-foreach ($transientPatterns as $pattern) {
-    $where[] = 'option_name LIKE %s';
-    $params[] = $wpdb->esc_like($pattern) . '%';
-}
-if ([] !== $where) {
-    $sql = "DELETE FROM {$wpdb->options} WHERE " . implode(' OR ', $where);
-    $wpdb->query($wpdb->prepare($sql, ...$params)); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+foreach ($transientPrefixes as $prefix) {
+    $optionPrefix = '_transient_' . $prefix;
+    $optionNames = $wpdb->get_col(
+        $wpdb->prepare(
+            "SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE %s",
+            $wpdb->esc_like($optionPrefix) . '%'
+        )
+    ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+    foreach ($optionNames as $optionName) {
+        $key = substr((string) $optionName, strlen('_transient_'));
+        if ('' !== $key) {
+            delete_transient($key);
+        }
+    }
 }
 
 $capabilities = [
