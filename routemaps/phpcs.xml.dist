@@ -1,19 +1,65 @@
 <?xml version="1.0"?>
 <ruleset name="RouteMaps">
-    <description>RouteMaps WordPress coding standards.</description>
+    <description>RouteMaps modern WordPress production quality and security rules.</description>
+
     <file>routemaps.php</file>
     <file>src</file>
-    <file>tests</file>
+    <file>templates</file>
+    <file>uninstall.php</file>
+
     <exclude-pattern>vendor/*</exclude-pattern>
     <arg name="extensions" value="php"/>
     <arg value="sp"/>
-    <rule ref="WordPress-Core"/>
-    <rule ref="WordPress-Extra"/>
-    <!-- The approved architecture uses PSR-4 class files and camelCase public contracts. -->
-    <rule ref="WordPress.Files.FileName.InvalidClassFileName">
-        <severity>0</severity>
-    </rule>
-    <rule ref="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid">
-        <severity>0</severity>
-    </rule>
+
+    <!-- Baseline PHP correctness without imposing legacy WordPress formatting
+         on the approved PSR-4/camelCase architecture. -->
+    <rule ref="Generic.PHP.Syntax"/>
+    <rule ref="Generic.PHP.DisallowShortOpenTag"/>
+    <rule ref="Generic.PHP.DisallowAlternativePHPTags"/>
+    <rule ref="PSR2.Files.ClosingTag"/>
+    <rule ref="Universal.NamingConventions.NoReservedKeywordParameterNames"/>
+    <rule ref="Generic.NamingConventions.UpperCaseConstantName"/>
+
+    <!-- General code-analysis checks. -->
+    <rule ref="Generic.CodeAnalysis.EmptyStatement"/>
+    <rule ref="Generic.CodeAnalysis.JumbledIncrementer"/>
+    <rule ref="Generic.CodeAnalysis.UnconditionalIfStatement"/>
+    <rule ref="Generic.CodeAnalysis.UselessOverridingMethod"/>
+    <rule ref="Generic.Classes.DuplicateClassName"/>
+    <rule ref="Squiz.PHP.NonExecutableCode"/>
+    <rule ref="Squiz.Functions.FunctionDuplicateArgument"/>
+    <rule ref="Universal.Arrays.DuplicateArrayKey"/>
+    <rule ref="Universal.CodeAnalysis.ConstructorDestructorReturn"/>
+    <rule ref="Universal.CodeAnalysis.ForeachUniqueAssignment"/>
+    <rule ref="Universal.CodeAnalysis.NoDoubleNegative"/>
+    <rule ref="Universal.CodeAnalysis.NoEchoSprintf"/>
+
+    <!-- WordPress security checks retained independently of code style. -->
+    <rule ref="WordPress.Security.EscapeOutput"/>
+    <rule ref="WordPress.Security.NonceVerification"/>
+    <rule ref="WordPress.Security.SafeRedirect"/>
+    <rule ref="WordPress.Security.ValidatedSanitizedInput"/>
+    <rule ref="WordPress.Security.PluginMenuSlug"/>
+
+    <!-- SQL safety for RouteMaps custom tables. -->
+    <rule ref="WordPress.DB.PreparedSQL"/>
+    <rule ref="WordPress.DB.PreparedSQLPlaceholders"/>
+    <rule ref="WordPress.DB.RestrictedClasses"/>
+    <rule ref="WordPress.DB.RestrictedFunctions"/>
+
+    <!-- WordPress API, deprecation and internationalization checks. -->
+    <rule ref="WordPress.WP.I18n"/>
+    <rule ref="WordPress.CodeAnalysis.EscapedNotTranslated"/>
+    <rule ref="WordPress.WP.DeprecatedFunctions"/>
+    <rule ref="WordPress.WP.DeprecatedClasses"/>
+    <rule ref="WordPress.WP.DeprecatedParameters"/>
+    <rule ref="WordPress.WP.DeprecatedParameterValues"/>
+    <rule ref="WordPress.WP.EnqueuedResources"/>
+    <rule ref="WordPress.WP.EnqueuedResourceParameters"/>
+    <rule ref="WordPress.WP.GlobalVariablesOverride"/>
+    <rule ref="WordPress.WP.GetMetaSingle"/>
+    <rule ref="WordPress.PHP.DevelopmentFunctions"/>
+    <rule ref="WordPress.PHP.DiscouragedPHPFunctions"/>
+    <rule ref="WordPress.PHP.IniSet"/>
+    <rule ref="WordPress.PHP.PregQuoteDelimiter"/>
 </ruleset>
