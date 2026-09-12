@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace RouteMaps\Core\Tests\Integration\PWA;
 
+use RouteMaps\Core\Infrastructure\Database\MigrationManager;
+use RouteMaps\Core\Infrastructure\Database\Migrations\Migration001RoutesVersions;
 use RouteMaps\Core\Infrastructure\Database\Repositories\WpdbRouteRepository;
 use RouteMaps\Core\PWA\PwaManifestController;
 use RouteMaps\Core\Viewer\RouteRewriteManager;
@@ -11,6 +13,15 @@ use WP_UnitTestCase;
 
 final class PwaManifestTest extends WP_UnitTestCase {
     private const ROUTE_UUID_PATTERN = '/^[0-9a-f-]{36}$/';
+
+    protected function setUp(): void {
+        parent::setUp();
+        global $wpdb;
+        delete_option('routemaps_db_version');
+        (new MigrationManager($wpdb, [new Migration001RoutesVersions()]))->migrate();
+        $wpdb->query('DELETE FROM ' . $wpdb->prefix . 'routemaps_route_versions');
+        $wpdb->query('DELETE FROM ' . $wpdb->prefix . 'routemaps_routes');
+    }
 
     public function test_manifest_is_route_scoped_standalone_and_contains_no_access_token(): void {
         global $wpdb;
