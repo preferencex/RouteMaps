@@ -6,14 +6,14 @@
 defined('ABSPATH') || exit;
 
 $continue = isset($_GET['continue']) ? sanitize_text_field(wp_unslash((string) $_GET['continue'])) : '';
-$error = isset($_GET['error']) ? sanitize_key(wp_unslash((string) $_GET['error'])) : '';
+$errorCode = isset($_GET['error']) ? sanitize_key(wp_unslash((string) $_GET['error'])) : '';
 $messages = [
     'login_csrf' => __('A sessão do formulário expirou. Tente novamente.', 'routemaps'),
     'login_invalid' => __('Preencha o utilizador e a palavra-passe.', 'routemaps'),
     'login_failed' => __('Não foi possível iniciar sessão com esses dados.', 'routemaps'),
     'login_rate_limited' => __('Foram efetuadas demasiadas tentativas. Tente novamente mais tarde.', 'routemaps'),
 ];
-$message = $messages[$error] ?? '';
+$message = $messages[$errorCode] ?? '';
 ?><!doctype html>
 <html <?php language_attributes(); ?>>
 <head>
