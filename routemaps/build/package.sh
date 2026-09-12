@@ -96,16 +96,7 @@ for forbidden in \
   fi
 done
 
-if grep -Eq '\\.map
-  grep -Fxq "$required" <<<"$entries" || fail "archive missing required path: $required"
-done
-
-grep -Eq '^routemaps/assets/viewer/.+\.js$' <<<"$entries" || fail 'archive missing built viewer JavaScript'
-grep -Eq '^routemaps/assets/viewer/.+\.css$' <<<"$entries" || fail 'archive missing built viewer CSS'
-grep -Eq '^routemaps/assets/viewer/(\.vite/)?manifest\.json$' <<<"$entries" || fail 'archive missing viewer manifest'
-
-printf 'RouteMaps package created: %s\n' "$archive"
- <<<"$entries"; then
+if grep -Eq '\.map$' <<<"$entries"; then
   fail 'source map found in release archive'
 fi
 
