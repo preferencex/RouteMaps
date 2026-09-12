@@ -94,6 +94,9 @@ final class RoutesPage {
 
         return [
             'restBase' => esc_url_raw(rest_url('routemaps/v1')),
+            'assets' => [
+                'adminBaseUrl' => esc_url_raw($baseUrl . 'assets/admin/'),
+            ],
             'i18n' => JavaScriptTranslations::catalogue(),
             'nonce' => wp_create_nonce('wp_rest'),
             'capabilities' => [
