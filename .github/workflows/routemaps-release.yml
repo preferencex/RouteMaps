@@ -1,0 +1,120 @@
+name: RouteMaps Core Release Gate
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+      - 'ci/**'
+
+permissions:
+  contents: read
+
+jobs:
+  release-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    defaults:
+      run:
+        working-directory: routemaps
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: dom, zip, mbstring, mysqli
+          tools: composer:v2
+          coverage: none
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install WordPress test tooling
+        run: sudo apt-get update && sudo apt-get install -y subversion default-mysql-client
+
+      - name: Detect committed dependency locks
+        id: locks
+        shell: bash
+        run: |
+          if [[ -f composer.lock && -f package-lock.json ]]; then
+            echo 'committed=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'committed=false' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate dependency locks for first CI bootstrap
+        if: steps.locks.outputs.committed != 'true'
+        run: bash build/bootstrap-release-env.sh --generate-locks
+
+      - name: Upload generated dependency locks
+        if: steps.locks.outputs.committed != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: routemaps-dependency-locks
+          path: |
+            routemaps/composer.lock
+            routemaps/package-lock.json
+          if-no-files-found: error
+
+      - name: Stop until generated locks are committed
+        if: steps.locks.outputs.committed != 'true'
+        shell: bash
+        run: |
+          echo 'Dependency locks were generated and uploaded as routemaps-dependency-locks.' >&2
+          echo 'Commit composer.lock and package-lock.json together, then rerun this workflow.' >&2
+          exit 1
+
+      - name: Install locked dependencies
+        if: steps.locks.outputs.committed == 'true'
+        run: bash build/bootstrap-release-env.sh --install
+
+      - name: Install WordPress PHPUnit fixtures
+        if: steps.locks.outputs.committed == 'true'
+        env:
+          WP_TESTS_DIR: /tmp/wordpress-tests-lib
+        run: bash build/install-wp-tests.sh wordpress_test root root 127.0.0.1 6.8.3
+
+      - name: Execute complete release gate
+        if: steps.locks.outputs.committed == 'true'
+        env:
+          CI: 'true'
+          WP_TESTS_DIR: /tmp/wordpress-tests-lib
+          WC_PLUGIN_FILE: /tmp/wordpress/wp-content/plugins/woocommerce/woocommerce.php
+        run: bash build/release-gate.sh
+
+      - name: Upload release ZIP
+        if: success() && steps.locks.outputs.committed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: routemaps-core-release
+          path: routemaps/dist/routemaps-*.zip
+          if-no-files-found: error
+
+      - name: Upload Playwright report on failure
+        if: failure() && steps.locks.outputs.committed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: routemaps-playwright-report
+          path: routemaps/playwright-report
+          if-no-files-found: ignore
