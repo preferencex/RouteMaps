@@ -48,7 +48,7 @@ function routemaps_ci_route(string $title, int $adminId, string $mapSourceId): a
     $routes = new WpdbRouteRepository($wpdb);
     $route = $routes->create($title, $adminId);
     $now = gmdate('Y-m-d H:i:s');
-    $categoryUuid = wp_generate_uuid4();
+    $categoryUuid = '00000000-0000-4000-8000-000000000001';
     $snapshot = [
         'route_uuid' => $route->uuid(),
         'title' => $title,
@@ -57,14 +57,14 @@ function routemaps_ci_route(string $title, int $adminId, string $mapSourceId): a
             'coordinates' => [[-8.6400, 41.1500], [-8.6291, 41.1579], [-8.6150, 41.1650]],
         ],
         'stops' => [[
-            'entity_uuid' => wp_generate_uuid4(),
+            'entity_uuid' => '00000000-0000-4000-8000-000000000002',
             'name' => 'E2E Paragem',
             'coordinates' => [-8.6291, 41.1579],
             'position' => 1,
         ]],
         'pois' => [[
-            'entity_uuid' => wp_generate_uuid4(),
-            'source_poi_uuid' => wp_generate_uuid4(),
+            'entity_uuid' => '00000000-0000-4000-8000-000000000003',
+            'source_poi_uuid' => '00000000-0000-4000-8000-000000000004',
             'position' => 1,
             'required' => false,
             'coordinates' => [-8.6291, 41.1579],
