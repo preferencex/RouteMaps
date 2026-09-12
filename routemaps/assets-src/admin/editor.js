@@ -72,6 +72,7 @@ export class RouteMapEditor {
     this.routeStyle = { color: '#00A099', width: 4 };
     this.degraded = false;
     this.loadingGeometry = false;
+    this.styleLoadHandler = null;
   }
 
   async mount() {
@@ -83,6 +84,9 @@ export class RouteMapEditor {
       attributionControl: true,
     });
     this.map.addControl(new NavigationControl({ visualizePitch: true }), 'top-right');
+
+    this.styleLoadHandler = () => this.syncRouteLayer();
+    this.map.on('style.load', this.styleLoadHandler);
 
     try {
       await waitForStyle(this.map);
@@ -136,10 +140,6 @@ export class RouteMapEditor {
   async loadGeometry(geometry) {
     this.loadingGeometry = true;
     try {
-      if (this.geoman) {
-        await this.geoman.features.deleteAll();
-      }
-
       if (this.geoman && geometry && ['LineString', 'MultiLineString'].includes(geometry.type)) {
         await this.geoman.features.importGeoJson({
           type: 'Feature',
@@ -148,9 +148,11 @@ export class RouteMapEditor {
         });
       }
 
-      // Geoman can emit remove/create events while resetting its feature store.
-      // Reassert the canonical RouteMaps geometry after that cycle has completed.
+      // The editor map is recreated for every route selection, so its Geoman
+      // feature store starts empty. Avoid deleteAll() here: it can emit a
+      // delayed gm:remove and clear a freshly imported route.
       this.setGeometry(geometry || null, false);
+      this.syncRouteLayer();
     } finally {
       this.loadingGeometry = false;
     }
@@ -260,11 +262,15 @@ export class RouteMapEditor {
     this.stopMarkers = [];
     this.poiMarkers = [];
     this.geoman?.destroy?.();
+    if (this.map && this.styleLoadHandler) {
+      this.map.off('style.load', this.styleLoadHandler);
+    }
     this.map?.remove();
     this.geoman = null;
     this.map = null;
     this.degraded = false;
     this.loadingGeometry = false;
+    this.styleLoadHandler = null;
   }
 
   handleFeatureChange(featureData) {
@@ -284,9 +290,6 @@ export class RouteMapEditor {
 
   syncRouteLayer() {
     if (!this.map || !this.map.isStyleLoaded()) {
-      if (this.map) {
-        this.map.once('style.load', () => this.syncRouteLayer());
-      }
       return;
     }
 
