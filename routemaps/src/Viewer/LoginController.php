@@ -79,7 +79,7 @@ final class LoginController {
             exit;
         }
 
-        $request = is_array($_POST) ? wp_unslash($_POST) : [];
+        $request = wp_unslash($_POST);
         try {
             $redirect = $this->authenticate($request);
         } catch (LogicException $error) {

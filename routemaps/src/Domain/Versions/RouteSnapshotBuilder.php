@@ -114,7 +114,7 @@ final class RouteSnapshotBuilder {
             static fn (array $left, array $right): int => $left['position'] <=> $right['position']
         );
 
-        return array_values($snapshotPois);
+        return $snapshotPois;
     }
 
     /** @param array{uuid:string,name:string,icon:string,color:string} $category */
