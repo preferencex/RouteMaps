@@ -178,6 +178,10 @@ final class AdminImportController {
     }
 
     private function stage(ImportFile $file): string {
+        if (!function_exists('wp_tempnam')) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+        }
+
         $path = wp_tempnam('routemaps-import');
         if (!is_string($path) || '' === $path) {
             throw new RuntimeException('import_stage_create_failed');
