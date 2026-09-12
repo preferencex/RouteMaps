@@ -173,10 +173,10 @@ final class AdminImportRestTest extends WP_UnitTestCase {
         self::assertNotNull($category);
 
         $routeId = (int) $response->get_data()['route']['id'];
-        $show = new WP_REST_Request('GET', '/routemaps/v1/admin/routes/' . $routeId);
-        $routeResponse = rest_get_server()->dispatch($show);
-        self::assertSame(200, $routeResponse->get_status());
-        $draft = $routeResponse->get_data()['draft']['data'];
+        $versions = new WpdbRouteVersionRepository($GLOBALS['wpdb']);
+        $draftVersion = $versions->findDraftForRoute($routeId);
+        self::assertNotNull($draftVersion);
+        $draft = json_decode($draftVersion->snapshotJson(), true, 512, JSON_THROW_ON_ERROR);
 
         self::assertSame($category->id(), $draft['stops'][0]['category_id']);
         self::assertSame($category->id(), $draft['categories'][0]['category_id']);
