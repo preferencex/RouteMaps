@@ -135,15 +135,15 @@ final class AdminImportController {
             return $this->error('import_not_found_or_expired', 404);
         }
 
-        $mapping = $this->mapping($request->get_param('mapping'));
-        if ($mapping instanceof WP_Error) {
-            return $mapping;
-        }
-
         try {
             $file = $this->fileFromStage($stage);
             $this->validator->validate($file);
             $importer = $this->importers->for($file);
+            $preview = $importer->inspect($file);
+            $mapping = $this->mapping($request->get_param('mapping'), $preview->categories());
+            if ($mapping instanceof WP_Error) {
+                return $mapping;
+            }
             $draft = $importer->import($file, $mapping);
             $route = $this->routes->create($draft->title(), get_current_user_id());
             $version = $this->drafts->save($route->id(), $draft, get_current_user_id());
@@ -219,7 +219,10 @@ final class AdminImportController {
         return new ImportFile($path, $name, is_string($mime) ? $mime : null);
     }
 
-    private function mapping(mixed $raw): ImportMapping|WP_Error {
+    /**
+     * @param list<array<string,mixed>> $sourceCategories
+     */
+    private function mapping(mixed $raw, array $sourceCategories = []): ImportMapping|WP_Error {
         $raw = is_array($raw) ? $raw : [];
         $categoryMapRaw = is_array($raw['category_map'] ?? null) ? $raw['category_map'] : [];
         $categoryMap = [];
@@ -231,6 +234,43 @@ final class AdminImportController {
             }
             $categoryMap[$sourceName] = $id;
         }
+
+        $allowedSources = [];
+        foreach ($sourceCategories as $category) {
+            if (!is_array($category) || !is_string($category['name'] ?? null)) {
+                continue;
+            }
+            $name = sanitize_text_field((string) $category['name']);
+            if ('' !== $name) {
+                $allowedSources[$name] = true;
+            }
+        }
+
+        $createCategories = is_array($raw['create_categories'] ?? null) ? $raw['create_categories'] : [];
+        if ([] !== $createCategories && !current_user_can('manage_routemaps_pois')) {
+            return $this->error('import_category_create_forbidden', 403);
+        }
+
+        foreach ($createCategories as $source) {
+            $sourceName = sanitize_text_field((string) $source);
+            if ('' === $sourceName || ([] !== $allowedSources && !isset($allowedSources[$sourceName]))) {
+                return $this->error('import_category_mapping_invalid', 400);
+            }
+            if (isset($categoryMap[$sourceName])) {
+                continue;
+            }
+
+            try {
+                $category = $this->categories->findBySlug($sourceName);
+                if (null === $category) {
+                    $category = $this->categories->create($sourceName);
+                }
+            } catch (InvalidArgumentException|RuntimeException $exception) {
+                return $this->error($exception->getMessage(), 400);
+            }
+            $categoryMap[$sourceName] = $category->id();
+        }
+
         $options = is_array($raw['options'] ?? null) ? $raw['options'] : [];
         return new ImportMapping($categoryMap, $options);
     }
