@@ -77,12 +77,12 @@ $capabilities = [
 
 if (function_exists('wp_roles')) {
     foreach (array_keys(wp_roles()->roles) as $roleName) {
-        $role = get_role((string) $roleName);
-        if (null === $role) {
+        $roleObject = get_role((string) $roleName);
+        if (null === $roleObject) {
             continue;
         }
         foreach ($capabilities as $capability) {
-            $role->remove_cap($capability);
+            $roleObject->remove_cap($capability);
         }
     }
 }
