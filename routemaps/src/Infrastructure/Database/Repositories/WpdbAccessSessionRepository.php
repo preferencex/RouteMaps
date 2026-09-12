@@ -23,7 +23,7 @@ final class WpdbAccessSessionRepository implements AccessSessionRepositoryInterf
     public function create(array $data): AccessSession {
         foreach (['license_id','user_id'] as $field) {
             if ((int) ($data[$field] ?? 0) <= 0) {
-                throw new InvalidArgumentException('access_session_' . $field . '_required');
+                throw new InvalidArgumentException('access_session_' . $field . '_required'); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Internal field name and machine-readable error code.
             }
         }
         $now = $this->format(new DateTimeImmutable('now', new DateTimeZone('UTC')));
