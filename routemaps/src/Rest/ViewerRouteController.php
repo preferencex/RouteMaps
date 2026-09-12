@@ -82,7 +82,7 @@ final class ViewerRouteController {
 
         $decision = $this->access->decide(new AccessRequestContext($userId, null, $licenseUuid, $route->id(), $now));
         if (!$decision->allowed()) {
-            return $this->forbidden($decision->reason()?->value ?? 'not_authorized');
+            return $this->forbidden($decision->reason()->value ?? 'not_authorized');
         }
 
         $versionId = (int) ($route->currentPublishedVersionId() ?? 0);
