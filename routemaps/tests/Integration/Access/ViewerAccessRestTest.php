@@ -19,6 +19,11 @@ use RouteMaps\Core\Infrastructure\Database\Repositories\WpdbLicenseRepository;
 use RouteMaps\Core\Infrastructure\Database\Repositories\WpdbLicenseUserRepository;
 use RouteMaps\Core\Infrastructure\Database\Repositories\WpdbRouteRepository;
 use RouteMaps\Core\Infrastructure\Database\Repositories\WpdbRouteVersionRepository;
+use RouteMaps\Core\Infrastructure\Database\MigrationManager;
+use RouteMaps\Core\Infrastructure\Database\Migrations\Migration001RoutesVersions;
+use RouteMaps\Core\Infrastructure\Database\Migrations\Migration002PoisCategories;
+use RouteMaps\Core\Infrastructure\Database\Migrations\Migration003Licenses;
+use RouteMaps\Core\Infrastructure\Database\Migrations\Migration004AccessSharing;
 use RouteMaps\Core\Infrastructure\Database\TransactionManager;
 use RouteMaps\Core\Rest\ViewerAccessController;
 use RouteMaps\Core\Rest\ViewerSharesController;
@@ -125,6 +130,24 @@ final class ViewerAccessRestTest extends WP_UnitTestCase {
     /** @return array{0:ViewerAccessController,1:ViewerSharesController,2:mixed,3:mixed,4:string,5:WpdbLicenseRepository} */
     private function scenario(ValidityMode $mode): array {
         global $wpdb;
+        delete_option('routemaps_db_version');
+        (new MigrationManager($wpdb, [
+            new Migration001RoutesVersions(),
+            new Migration002PoisCategories(),
+            new Migration003Licenses(),
+            new Migration004AccessSharing(),
+        ]))->migrate();
+        foreach ([
+            'routemaps_access_events',
+            'routemaps_access_sessions',
+            'routemaps_license_users',
+            'routemaps_licenses',
+            'routemaps_route_versions',
+            'routemaps_routes',
+        ] as $suffix) {
+            $wpdb->query('DELETE FROM ' . $wpdb->prefix . $suffix);
+        }
+
         $routes = new WpdbRouteRepository($wpdb);
         $versions = new WpdbRouteVersionRepository($wpdb);
         $licenses = new WpdbLicenseRepository($wpdb);
