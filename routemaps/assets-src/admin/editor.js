@@ -46,6 +46,19 @@ const waitForStyle = (map, timeoutMs = 8000) => new Promise((resolve, reject) =>
   map.on('style.load', onLoad);
 });
 
+const waitUntilStyleReady = async (map, timeoutMs = 4000) => {
+  const startedAt = Date.now();
+
+  while (Date.now() - startedAt < timeoutMs) {
+    if (map?.isStyleLoaded?.()) {
+      return true;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+
+  return Boolean(map?.isStyleLoaded?.());
+};
+
 const featureGeometry = (featureData) => {
   if (!featureData || typeof featureData.getGeoJson !== 'function') {
     return null;
@@ -140,18 +153,24 @@ export class RouteMapEditor {
   async loadGeometry(geometry) {
     this.loadingGeometry = true;
     try {
+      this.geometry = geometry || null;
+
       if (this.geoman && geometry && ['LineString', 'MultiLineString'].includes(geometry.type)) {
-        await this.geoman.features.importGeoJson({
-          type: 'Feature',
-          properties: { routemaps_role: 'route' },
-          geometry,
-        });
+        try {
+          await this.geoman.features.importGeoJson({
+            type: 'Feature',
+            properties: { routemaps_role: 'route' },
+            geometry,
+          });
+        } catch (_) {
+          // Geoman editing is optional for displaying an imported route.
+          // Keep the canonical RouteMaps geometry visible even if Geoman
+          // cannot import the feature in the current map state.
+          this.degraded = true;
+        }
       }
 
-      // The editor map is recreated for every route selection, so its Geoman
-      // feature store starts empty. Avoid deleteAll() here: it can emit a
-      // delayed gm:remove and clear a freshly imported route.
-      this.setGeometry(geometry || null, false);
+      await waitUntilStyleReady(this.map);
       this.syncRouteLayer();
     } finally {
       this.loadingGeometry = false;
