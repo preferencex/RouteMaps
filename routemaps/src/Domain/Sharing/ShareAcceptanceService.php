@@ -38,7 +38,7 @@ final class ShareAcceptanceService {
             $accepted = $this->members->activate($member->id(), $userId, $this->now());
         } catch (RuntimeException $error) {
             if ('license_user_not_pending' === $error->getMessage()) {
-                throw new LogicException('share_invite_invalid', 0, $error);
+                throw new LogicException('share_invite_invalid', 0, $error); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Chained domain exception is not rendered.
             }
             throw $error;
         }
