@@ -159,6 +159,29 @@ final class AdminImportRestTest extends WP_UnitTestCase {
         self::assertSame(404, $secondCommit->get_status());
     }
 
+
+    public function test_commit_can_create_missing_source_category_automatically(): void {
+        $this->authenticateEditor();
+        $categoryRepository = new WpdbCategoryRepository($GLOBALS['wpdb']);
+        $inspect = rest_get_server()->dispatch($this->inspectRequest($this->fixtureUpload('route.geojson')));
+        $importId = (string) $inspect->get_data()['import_id'];
+
+        $response = rest_get_server()->dispatch($this->commitRequest($importId, [], ['Restaurantes']));
+        self::assertSame(201, $response->get_status());
+
+        $category = $categoryRepository->findBySlug('restaurantes');
+        self::assertNotNull($category);
+
+        $routeId = (int) $response->get_data()['route']['id'];
+        $show = new WP_REST_Request('GET', '/routemaps/v1/admin/routes/' . $routeId);
+        $routeResponse = rest_get_server()->dispatch($show);
+        self::assertSame(200, $routeResponse->get_status());
+        $draft = $routeResponse->get_data()['draft']['data'];
+
+        self::assertSame($category->id(), $draft['stops'][0]['category_id']);
+        self::assertSame($category->id(), $draft['categories'][0]['category_id']);
+    }
+
     private function authenticateEditor(): int {
         $user = self::factory()->user->create_and_get(['role' => 'administrator']);
         wp_set_current_user($user->ID);
@@ -173,13 +196,20 @@ final class AdminImportRestTest extends WP_UnitTestCase {
         return $request;
     }
 
-    /** @param array<string,int> $categoryMap */
-    private function commitRequest(string $importId, array $categoryMap): WP_REST_Request {
+    /**
+     * @param array<string,int> $categoryMap
+     * @param list<string> $createCategories
+     */
+    private function commitRequest(string $importId, array $categoryMap, array $createCategories = []): WP_REST_Request {
         $request = new WP_REST_Request('POST', '/routemaps/v1/admin/import/commit');
         $request->set_header('X-WP-Nonce', wp_create_nonce('wp_rest'));
         $request->set_body_params([
             'import_id' => $importId,
-            'mapping' => ['category_map' => $categoryMap, 'options' => []],
+            'mapping' => [
+                'category_map' => $categoryMap,
+                'create_categories' => $createCategories,
+                'options' => [],
+            ],
         ]);
         return $request;
     }
