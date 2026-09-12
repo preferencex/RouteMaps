@@ -17,6 +17,10 @@ if (!defined('ROUTEMAPS_CI_E2E') || true !== ROUTEMAPS_CI_E2E) {
 
 const ROUTEMAPS_CI_MAIL_OPTION = 'routemaps_ci_mail_messages';
 
+// Browser acceptance scenarios intentionally reuse fixture users across viewport projects.
+// Disable throttling only in this test-only plugin so production rate limits remain unchanged.
+add_filter('routemaps_rate_limiter_pre_consume', static fn(): bool => true, 10, 4);
+
 add_filter('pre_wp_mail', static function ($return, array $atts) {
     $messages = get_option(ROUTEMAPS_CI_MAIL_OPTION, []);
     if (!is_array($messages)) {
