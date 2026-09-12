@@ -11,7 +11,10 @@ parameters:
     # the runtime contracts accepted by plugin integrations.
     treatPhpDocTypesAsCertain: false
 
-    stubFiles:
+    # These are synthetic contracts for APIs/constants that are not installed
+    # through Composer in the analysis environment. They must be scanned as
+    # source symbols rather than treated as overrides for already-known symbols.
+    scanFiles:
         - phpstan-stubs/woocommerce.stub.php
         - phpstan-stubs/routemaps.stub.php
 
