@@ -112,6 +112,12 @@ final class RouteProductPanel {
         if (!current_user_can('edit_post', $productId)) {
             return;
         }
+        $nonce = isset($_POST['woocommerce_meta_nonce'])
+            ? (string) wp_unslash($_POST['woocommerce_meta_nonce'])
+            : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce is verified immediately below.
+        if ('' === $nonce || !wp_verify_nonce($nonce, 'woocommerce_save_data')) {
+            return;
+        }
         $product = wc_get_product($productId);
         if (!$product instanceof WC_Product) {
             return;
@@ -130,7 +136,7 @@ final class RouteProductPanel {
             RouteProductMeta::MAX_SHARES,
         ] as $key) {
             if (isset($_POST[$key])) {
-                $input[$key] = wp_unslash($_POST[$key]);
+                $input[$key] = sanitize_text_field(wp_unslash((string) $_POST[$key]));
             }
         }
         $input[RouteProductMeta::ENABLED] = $input[RouteProductMeta::ENABLED] ?? 'no';
