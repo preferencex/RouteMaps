@@ -24,7 +24,10 @@ class WC_Product {
 
 class WC_Order {
     public function get_billing_email(): string {}
-    /** @return array<int,WC_Order_Item_Product> */
+    /**
+     * @param string|array<int|string,string> $types
+     * @return array<int,WC_Order_Item_Product>
+     */
     public function get_items(string|array $types = 'line_item'): array {}
     public function get_id(): int {}
     public function is_paid(): bool {}
