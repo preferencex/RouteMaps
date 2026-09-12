@@ -4,6 +4,12 @@ import './admin.css';
 
 import { createApi, RouteMapsApiError } from './api.js';
 import { RouteMapEditor } from './editor.js';
+import {
+  CREATE_CATEGORY_VALUE,
+  defaultCategorySelection,
+  humanImportWarnings,
+  importSummary,
+} from './import-preview.js';
 import { mapPoiCategoryVisibility, reorderStopUuids } from './state.js';
 import { __, sprintf } from '../shared/i18n.js';
 
@@ -280,6 +286,12 @@ class RouteMapsAdminApp {
     this.root.querySelector('[data-field="route-color"]').value = this.draft.style.color || '#00A099';
     this.root.querySelector('[data-field="route-width"]').value = this.draft.style.width || 4;
 
+    // Render imported content before the map starts. A basemap problem must
+    // never make valid imported route data look empty.
+    this.renderStops(false);
+    this.renderSelectedPois();
+    this.renderCategoryFilters();
+
     if (this.mapEditor) {
       this.mapEditor.destroy();
     }
@@ -292,14 +304,23 @@ class RouteMapsAdminApp {
       onStopAdd: (coordinates) => this.addStop(coordinates),
       onStopMove: (stopUuid, coordinates) => this.moveStop(stopUuid, coordinates),
     });
-    await this.mapEditor.mount();
-    await this.mapEditor.loadGeometry(this.draft.geometry);
-    this.mapEditor.setRouteStyle(this.draft.style);
-    this.renderStops();
-    this.renderSelectedPois();
-    this.renderCategoryFilters();
-    if (this.draft.geometry) this.mapEditor.fitToGeometry(this.draft.geometry);
-    this.showStatus(__('Rota carregada.'), 'success');
+
+    try {
+      await this.mapEditor.mount();
+      await this.mapEditor.loadGeometry(this.draft.geometry);
+      this.mapEditor.setRouteStyle(this.draft.style);
+      this.mapEditor.setStops(this.draft.stops);
+      this.renderSelectedPois();
+      if (this.draft.geometry) this.mapEditor.fitToGeometry(this.draft.geometry);
+
+      if (this.mapEditor.isDegraded()) {
+        this.showStatus(__('Rota carregada. O mapa base externo não respondeu; a geometria continua disponível em modo simplificado.'), 'warning');
+      } else {
+        this.showStatus(__('Rota carregada.'), 'success');
+      }
+    } catch (error) {
+      this.showStatus(sprintf(__('Rota carregada, mas o mapa não pôde ser iniciado: %s'), this.message(error)), 'warning');
+    }
   }
 
   addStop(coordinates) {
@@ -523,26 +544,75 @@ class RouteMapsAdminApp {
     container.replaceChildren();
     if (!preview) { container.hidden = true; return; }
     container.hidden = false;
-    const heading = document.createElement('h3'); heading.textContent = preview.title || __('Rota importada');
-    const meta = document.createElement('p'); meta.textContent = `${String(preview.format || '').toUpperCase()} · ${sprintf('%s pontos', preview.points?.length || 0)}`;
-    container.append(heading, meta);
 
-    if (Array.isArray(preview.warnings) && preview.warnings.length) {
-      const warningTitle = document.createElement('strong'); warningTitle.textContent = __('Avisos de importação'); container.append(warningTitle);
+    const heading = document.createElement('h3');
+    heading.textContent = preview.title || __('Rota importada');
+    container.append(heading);
+
+    const summary = importSummary(preview);
+    const summaryWrap = document.createElement('div');
+    summaryWrap.className = 'routemaps-import-summary';
+    const summaryRows = [
+      [__('Formato'), String(preview.format || '').toUpperCase() || '—'],
+      [__('Percurso'), sprintf(__('%s linha(s) de rota'), summary.routeLines)],
+      [__('Pontos'), sprintf(__('%s ponto(s)'), summary.points)],
+      [__('Categorias encontradas'), String(summary.categories)],
+    ];
+    if (summary.polygons) summaryRows.push([__('Áreas/polígonos'), String(summary.polygons)]);
+    summaryRows.forEach(([label, value]) => {
+      const item = document.createElement('div');
+      item.className = 'routemaps-import-summary-item';
+      const strong = document.createElement('strong'); strong.textContent = label;
+      const span = document.createElement('span'); span.textContent = value;
+      item.append(strong, span);
+      summaryWrap.append(item);
+    });
+    container.append(summaryWrap);
+
+    const readableWarnings = humanImportWarnings(preview.warnings);
+    if (readableWarnings.length) {
+      const warningWrap = document.createElement('div');
+      warningWrap.className = 'routemaps-import-warnings';
+      const warningTitle = document.createElement('strong'); warningTitle.textContent = __('Avisos de importação');
       const list = document.createElement('ul');
-      preview.warnings.forEach((warning) => { const li = document.createElement('li'); li.textContent = warning; list.append(li); });
-      container.append(list);
+      readableWarnings.forEach((warning) => {
+        const li = document.createElement('li'); li.textContent = warning; list.append(li);
+      });
+      warningWrap.append(warningTitle, list);
+      container.append(warningWrap);
     }
 
     if (Array.isArray(preview.categories) && preview.categories.length) {
-      const mapWrap = document.createElement('div'); mapWrap.className = 'routemaps-import-mapping';
+      const mappingTitle = document.createElement('strong');
+      mappingTitle.textContent = __('Categorias do ficheiro');
+      container.append(mappingTitle);
+
+      const mapWrap = document.createElement('div');
+      mapWrap.className = 'routemaps-import-mapping';
       preview.categories.forEach((source) => {
+        const sourceLabel = source.name || __('Categoria');
         const row = document.createElement('label'); row.className = 'routemaps-import-map-row';
-        const sourceName = document.createElement('span'); sourceName.textContent = source.name || __('Categoria');
-        const select = document.createElement('select'); select.dataset.sourceCategory = source.name || '';
-        const none = document.createElement('option'); none.value = ''; none.textContent = __('Sem correspondência'); select.append(none);
-        this.categories.forEach((category) => { const option = document.createElement('option'); option.value = String(category.id); option.textContent = category.name; select.append(option); });
-        row.append(sourceName, select); mapWrap.append(row);
+        const sourceName = document.createElement('span'); sourceName.textContent = sourceLabel;
+        const select = document.createElement('select'); select.dataset.sourceCategory = sourceLabel;
+
+        const none = document.createElement('option');
+        none.value = ''; none.textContent = __('Sem correspondência'); select.append(none);
+
+        if (this.config.capabilities?.managePois) {
+          const create = document.createElement('option');
+          create.value = CREATE_CATEGORY_VALUE;
+          create.textContent = sprintf(__('Criar nova categoria “%s”'), sourceLabel);
+          select.append(create);
+        }
+
+        this.categories.forEach((category) => {
+          const option = document.createElement('option');
+          option.value = String(category.id); option.textContent = category.name; select.append(option);
+        });
+
+        select.value = defaultCategorySelection(sourceLabel, this.categories, Boolean(this.config.capabilities?.managePois));
+        row.append(sourceName, select);
+        mapWrap.append(row);
       });
       container.append(mapWrap);
     }
@@ -552,14 +622,22 @@ class RouteMapsAdminApp {
   async commitImport() {
     if (!this.importState?.import_id) return;
     const categoryMap = {};
+    const createCategories = [];
     this.root.querySelectorAll('[data-source-category]').forEach((select) => {
-      if (select.value) categoryMap[select.dataset.sourceCategory] = Number(select.value);
+      const source = select.dataset.sourceCategory;
+      if (!source) return;
+      if (select.value === CREATE_CATEGORY_VALUE) {
+        createCategories.push(source);
+      } else if (select.value) {
+        categoryMap[source] = Number(select.value);
+      }
     });
     this.showImportStatus(__('A criar rascunho…'));
     try {
-      const result = await this.api.commitImport(this.importState.import_id, categoryMap);
+      const result = await this.api.commitImport(this.importState.import_id, categoryMap, createCategories);
       this.importState = null;
       this.root.querySelector('[data-role="import-dialog"]').close();
+      await this.loadCategories();
       await this.loadRoutes();
       await this.selectRoute(result.route.id);
       this.showStatus(__('Rota importada para rascunho.'), 'success');
