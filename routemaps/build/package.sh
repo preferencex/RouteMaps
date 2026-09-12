@@ -89,11 +89,25 @@ for forbidden in \
   '/test-results/' \
   '/coverage/' \
   '/.phpstan-cache' \
-  '/.phpunit.result.cache'; do
+  '/.phpunit.result.cache' \
+  '/docs/'; do
   if grep -Fq "$forbidden" <<<"$entries"; then
     fail "development-only path found in archive: $forbidden"
   fi
 done
+
+if grep -Eq '\\.map
+  grep -Fxq "$required" <<<"$entries" || fail "archive missing required path: $required"
+done
+
+grep -Eq '^routemaps/assets/viewer/.+\.js$' <<<"$entries" || fail 'archive missing built viewer JavaScript'
+grep -Eq '^routemaps/assets/viewer/.+\.css$' <<<"$entries" || fail 'archive missing built viewer CSS'
+grep -Eq '^routemaps/assets/viewer/(\.vite/)?manifest\.json$' <<<"$entries" || fail 'archive missing viewer manifest'
+
+printf 'RouteMaps package created: %s\n' "$archive"
+ <<<"$entries"; then
+  fail 'source map found in release archive'
+fi
 
 for required in "${required_paths[@]}"; do
   grep -Fxq "$required" <<<"$entries" || fail "archive missing required path: $required"
