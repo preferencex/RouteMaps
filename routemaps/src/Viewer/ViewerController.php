@@ -123,9 +123,22 @@ final class ViewerController {
                     $styles[] = $baseUrl . 'assets/viewer/' . ltrim($css, '/');
                 }
             }
+
+            if ([] === $styles && is_array($manifest)) {
+                foreach ($manifest as $manifestEntry) {
+                    if (!is_array($manifestEntry)) {
+                        continue;
+                    }
+                    $cssFile = $manifestEntry['file'] ?? null;
+                    if (is_string($cssFile) && str_ends_with($cssFile, '.css')) {
+                        $styles[] = $baseUrl . 'assets/viewer/' . ltrim($cssFile, '/');
+                    }
+                }
+            }
+
             return [
                 'script' => $baseUrl . 'assets/viewer/' . ltrim((string) $entry['file'], '/'),
-                'styles' => $styles,
+                'styles' => array_values(array_unique($styles)),
             ];
         }
 
