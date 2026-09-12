@@ -1,7 +1,7 @@
 import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 
-const testConfig = {
+const browserDefines = {\n  'process.env.NODE_ENV': JSON.stringify('production'),\n};\n\nconst testConfig = {
   environment: 'node',
   include: [
     'assets-src/admin/__tests__/**/*.test.js',
