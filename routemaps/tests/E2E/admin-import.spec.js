@@ -45,3 +45,54 @@ test('keeps imported route data visible when the external basemap cannot load', 
     timeout: 10_000,
   }).toBe(true);
 });
+
+
+test('keeps editor zoom, fit and route deletion controls functional', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop', 'Admin editor controls only need one browser viewport.');
+
+  const missing = requiredEnv(prerequisites);
+  if (missing.length > 0 && process.env.CI) throw new Error(`Missing release E2E environment: ${missing.join(', ')}`);
+  test.skip(missing.length > 0, `Missing E2E environment: ${missing.join(', ')}`);
+
+  await loginWordPress(page, env('ROUTEMAPS_E2E_ADMIN_USER'), env('ROUTEMAPS_E2E_ADMIN_PASSWORD'));
+  await openRouteMapsAdmin(page);
+  const imported = await importFixtureRoute(page, importFixture);
+
+  await expect.poll(() => page.evaluate(() => globalThis.RouteMapsAdminApp?.mapEditor?.map?.getMaxZoom?.() || 0)).toBe(18);
+
+  await page.evaluate(() => {
+    globalThis.RouteMapsAdminApp.mapEditor.map.jumpTo({ center: [0, 0], zoom: 18 });
+    globalThis.RouteMapsAdminApp.mapEditor.map.setZoom(22);
+  });
+  await expect.poll(() => page.evaluate(() => globalThis.RouteMapsAdminApp.mapEditor.map.getZoom())).toBeLessThanOrEqual(18);
+
+  await page.locator('[data-action="fit-route"]').click();
+  await expect(page.locator('[data-role="status"]')).toContainText('Percurso enquadrado no mapa.');
+  await expect.poll(() => page.evaluate(() => {
+    const geometry = globalThis.RouteMapsAdminApp?.draft?.geometry;
+    const map = globalThis.RouteMapsAdminApp?.mapEditor?.map;
+    if (!geometry || !map) return false;
+
+    const coordinates = geometry.type === 'LineString'
+      ? geometry.coordinates
+      : geometry.coordinates.flat();
+    if (!Array.isArray(coordinates) || !coordinates.length) return false;
+
+    const lngs = coordinates.map((pair) => Number(pair?.[0])).filter(Number.isFinite);
+    const lats = coordinates.map((pair) => Number(pair?.[1])).filter(Number.isFinite);
+    if (!lngs.length || !lats.length) return false;
+
+    const center = map.getCenter();
+    return center.lng >= Math.min(...lngs) && center.lng <= Math.max(...lngs)
+      && center.lat >= Math.min(...lats) && center.lat <= Math.max(...lats);
+  })).toBe(true);
+
+  page.once('dialog', (dialog) => dialog.accept());
+  await page.locator('.routemaps-route-row.is-active .routemaps-route-delete').click();
+
+  await expect.poll(() => page.evaluate((routeId) => (
+    globalThis.RouteMapsAdminApp?.routes?.some((route) => Number(route.id) === Number(routeId))
+  ), imported.id)).toBe(false);
+  await expect(page.locator('[data-role="editor"]')).toBeHidden();
+  await expect(page.locator('[data-role="empty-state"]')).toBeVisible();
+});
