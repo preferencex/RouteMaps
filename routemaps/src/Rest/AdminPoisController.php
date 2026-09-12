@@ -109,9 +109,10 @@ final class AdminPoisController {
     /** @return array<string,mixed>|WP_Error */
     private function validatedPayload(WP_REST_Request $request): array|WP_Error {
         $params = $request->get_json_params();
-        if ([] === $params) {
+        if (!is_array($params) || [] === $params) {
             $params = $request->get_params();
         }
+        $params = is_array($params) ? $params : [];
         $name = sanitize_text_field((string) ($params['name'] ?? ''));
         $categoryId = (int) ($params['category_id'] ?? 0);
         if ('' === $name) {
