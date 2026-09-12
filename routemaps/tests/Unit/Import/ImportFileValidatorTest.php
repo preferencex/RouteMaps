@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace RouteMaps\Core\Tests\Unit\Import;
 
 use InvalidArgumentException;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use RouteMaps\Core\Import\ImportFile;
 use RouteMaps\Core\Import\Security\ImportFileValidator;
@@ -109,7 +108,7 @@ XML;
         $validator->validate($file);
     }
 
-    #[DataProvider('supportedFileProvider')]
+    /** @dataProvider supportedFileProvider */
     public function test_accepts_supported_safe_files(string $name, string $contents, string $mime): void {
         $file = $this->file($name, $contents, $mime);
         $validator = new ImportFileValidator(1024 * 1024, 2 * 1024 * 1024, 50.0);
