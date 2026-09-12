@@ -20,17 +20,29 @@ jobs:
           ref: work/ci-fixes-1
           fetch-depth: 0
 
-      - name: Remove strict_types from WP-CLI eval-file seed
+      - name: Make fixture license creation deterministic
         shell: bash
         run: |
           set -euo pipefail
           file='routemaps/tests/E2E/ci-seed.php'
-          grep -q '^declare(strict_types=1);$' "$file"
-          sed -i '/^declare(strict_types=1);$/d' "$file"
+          marker="    order->payment_complete('routemaps-ci');"
+          replacement="    order->payment_complete('routemaps-ci');\n    do_action('woocommerce_payment_complete', order->get_id());"
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('routemaps/tests/E2E/ci-seed.php')
+          text = path.read_text()
+          marker = "    $order->payment_complete('routemaps-ci');"
+          replacement = marker + "\n    do_action('woocommerce_payment_complete', $order->get_id());"
+          if replacement in text:
+              raise SystemExit('Seed already contains explicit payment-complete action')
+          if marker not in text:
+              raise SystemExit('Expected payment_complete marker not found')
+          path.write_text(text.replace(marker, replacement, 1))
+          PY
           git diff --check
           git diff --exit-code --quiet && { echo 'No change produced' >&2; exit 1; }
           git config user.name 'RouteMaps CI Bootstrap'
           git config user.email 'actions@users.noreply.github.com'
           git add "$file"
-          git commit -m 'ci: make E2E seed compatible with wp eval-file'
+          git commit -m 'ci: issue deterministic licenses in E2E seed'
           git push origin HEAD:work/ci-fixes-1
