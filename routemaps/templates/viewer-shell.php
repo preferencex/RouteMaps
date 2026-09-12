@@ -29,12 +29,16 @@ $json = wp_json_encode(
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title><?php echo esc_html__('RouteMaps', 'routemaps'); ?></title>
     <?php foreach ($styles as $style) : if (is_string($style) && '' !== $style) : ?>
+        <?php // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Standalone viewer shell loads the compiled Vite asset directly. ?>
         <link rel="stylesheet" href="<?php echo esc_url($style); ?>">
     <?php endif; endforeach; ?>
 </head>
 <body class="routemaps-viewer-shell">
 <div id="routemaps-viewer" role="application" aria-label="<?php echo esc_attr__('RouteMaps', 'routemaps'); ?>"></div>
 <script id="routemaps-viewer-bootstrap" type="application/json"><?php echo $json ?: '{}'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON_HEX flags above. ?></script>
-<?php if ('' !== $script) : ?><script type="module" src="<?php echo esc_url($script); ?>"></script><?php endif; ?>
+<?php if ('' !== $script) : ?>
+<?php // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- Standalone viewer shell loads the compiled ES module directly. ?>
+<script type="module" src="<?php echo esc_url($script); ?>"></script>
+<?php endif; ?>
 </body>
 </html>
