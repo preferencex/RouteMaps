@@ -1,4 +1,4 @@
-import maplibregl from 'maplibre-gl';
+import * as maplibregl from 'maplibre-gl';
 import { Protocol } from 'pmtiles';
 import { visiblePois } from './filters.js';
 import { __, sprintf } from '../shared/i18n.js';
