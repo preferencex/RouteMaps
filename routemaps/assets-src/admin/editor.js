@@ -7,6 +7,45 @@ setWorkerUrl(mapLibreWorkerUrl);
 const ROUTE_SOURCE_ID = 'routemaps-route-preview';
 const ROUTE_LAYER_ID = 'routemaps-route-preview-line';
 
+const FALLBACK_STYLE = {
+  version: 8,
+  sources: {},
+  layers: [
+    {
+      id: 'routemaps-fallback-background',
+      type: 'background',
+      paint: { 'background-color': '#eef2f3' },
+    },
+  ],
+};
+
+const waitForStyle = (map, timeoutMs = 8000) => new Promise((resolve, reject) => {
+  if (map.isStyleLoaded()) {
+    resolve();
+    return;
+  }
+
+  let settled = false;
+  const cleanup = () => {
+    map.off('style.load', onLoad);
+    clearTimeout(timer);
+  };
+  const onLoad = () => {
+    if (settled) return;
+    settled = true;
+    cleanup();
+    resolve();
+  };
+  const timer = setTimeout(() => {
+    if (settled) return;
+    settled = true;
+    cleanup();
+    reject(new Error('basemap_style_timeout'));
+  }, timeoutMs);
+
+  map.on('style.load', onLoad);
+});
+
 const featureGeometry = (featureData) => {
   if (!featureData || typeof featureData.getGeoJson !== 'function') {
     return null;
@@ -31,6 +70,7 @@ export class RouteMapEditor {
     this.stopPlacementHandler = null;
     this.geometry = null;
     this.routeStyle = { color: '#00A099', width: 4 };
+    this.degraded = false;
   }
 
   async mount() {
@@ -43,10 +83,27 @@ export class RouteMapEditor {
     });
     this.map.addControl(new NavigationControl({ visualizePitch: true }), 'top-right');
 
+    try {
+      await waitForStyle(this.map);
+    } catch (_) {
+      this.degraded = true;
+      this.map.setStyle(FALLBACK_STYLE);
+      await waitForStyle(this.map, 3000);
+    }
+
     this.geoman = new Geoman(this.map, {
       settings: { snapDistance: 18 },
     });
-    await this.geoman.waitForGeomanLoaded();
+    try {
+      await Promise.race([
+        this.geoman.waitForGeomanLoaded(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('geoman_load_timeout')), 12000)),
+      ]);
+    } catch (_) {
+      this.degraded = true;
+      this.geoman?.destroy?.();
+      this.geoman = null;
+    }
 
     this.map.on('gm:create', (event) => this.handleFeatureChange(event.feature));
     this.map.on('gm:changeend', (event) => this.handleFeatureChange(event.feature));
@@ -60,6 +117,10 @@ export class RouteMapEditor {
     return this;
   }
 
+  isDegraded() {
+    return this.degraded;
+  }
+
   async drawRoute() {
     if (!this.geoman) return;
     await this.geoman.options.enableMode('draw', 'line');
@@ -71,9 +132,9 @@ export class RouteMapEditor {
   }
 
   async loadGeometry(geometry) {
+    this.setGeometry(geometry || null, false);
     if (!this.geoman) return;
     await this.geoman.features.deleteAll();
-    this.setGeometry(geometry || null, false);
     if (geometry && ['LineString', 'MultiLineString'].includes(geometry.type)) {
       await this.geoman.features.importGeoJson({
         type: 'Feature',
@@ -190,6 +251,7 @@ export class RouteMapEditor {
     this.map?.remove();
     this.geoman = null;
     this.map = null;
+    this.degraded = false;
   }
 
   handleFeatureChange(featureData) {

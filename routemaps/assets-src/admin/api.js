@@ -59,11 +59,15 @@ export const createApi = (config) => {
       formData.append('file', file);
       return request('/admin/import/inspect', { method: 'POST', formData });
     },
-    commitImport: (importId, categoryMap = {}, options = {}) => request('/admin/import/commit', {
+    commitImport: (importId, categoryMap = {}, createCategories = [], options = {}) => request('/admin/import/commit', {
       method: 'POST',
       body: {
         import_id: importId,
-        mapping: { category_map: categoryMap, options },
+        mapping: {
+          category_map: categoryMap,
+          create_categories: createCategories,
+          options,
+        },
       },
     }),
     cancelImport: (importId) => request(`/admin/import/${importId}`, { method: 'DELETE' }),

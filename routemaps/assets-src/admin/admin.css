@@ -59,6 +59,7 @@
 .routemaps-editor-status { min-height: 20px; padding: 10px 2px 0; color: var(--rt-muted); }
 .routemaps-editor-status[data-type="success"] { color: var(--rt-teal-dark); }
 .routemaps-editor-status[data-type="error"] { color: var(--rt-danger); }
+.routemaps-editor-status[data-type="warning"] { color: #8a6500; }
 .routemaps-editor.is-preview .routemaps-properties, .routemaps-editor.is-preview .routemaps-map-toolbar, .routemaps-editor.is-preview .routemaps-title-field { opacity: .35; pointer-events: none; }
 .routemaps-dialog { width: min(760px, calc(100vw - 40px)); border: 0; padding: 0; border-radius: 12px; box-shadow: 0 18px 60px rgba(23,63,89,.24); }
 .routemaps-dialog::backdrop { background: rgba(16, 36, 49, .52); }
@@ -69,8 +70,14 @@
 .routemaps-file-drop { display: grid; place-items: center; gap: 10px; padding: 24px; border: 1px dashed #9eb2bd; border-radius: 8px; background: #f8fbfc; }
 .routemaps-import-step { display: grid; gap: 12px; }
 .routemaps-import-preview { margin-top: 18px; padding: 16px; border-radius: 8px; background: #f4f8fa; }
-.routemaps-import-preview h3 { margin: 0 0 4px; }
-.routemaps-import-mapping { display: grid; gap: 8px; margin-top: 14px; }
+.routemaps-import-preview h3 { margin: 0 0 12px; }
+.routemaps-import-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0 0 16px; }
+.routemaps-import-summary-item { display: grid; gap: 3px; padding: 10px; border: 1px solid var(--rt-border); border-radius: 7px; background: #fff; }
+.routemaps-import-summary-item strong { color: var(--rt-muted); font-size: 10px; text-transform: uppercase; letter-spacing: .04em; }
+.routemaps-import-summary-item span { color: var(--rt-navy); font-size: 14px; font-weight: 700; }
+.routemaps-import-warnings { margin: 0 0 16px; padding: 11px 12px; border-left: 3px solid #d8a600; background: #fff9e8; }
+.routemaps-import-warnings ul { margin: 7px 0 0 18px; }
+.routemaps-import-mapping { display: grid; gap: 8px; margin-top: 10px; }
 .routemaps-import-map-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: center; }
 .routemaps-muted { color: var(--rt-muted); font-size: 12px; }
 .routemaps-stop-marker::after { content: attr(data-stop-index); position: absolute; inset: 0; display: grid; place-content: center; color: #fff; font-size: 9px; font-weight: 800; pointer-events: none; }
@@ -85,4 +92,6 @@
   .routemaps-editor-map { min-height: 480px; }
   .routemaps-editor-topbar, .routemaps-admin-header { align-items: stretch; flex-direction: column; }
   .routemaps-title-field { min-width: 0; }
+  .routemaps-import-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .routemaps-import-map-row { grid-template-columns: 1fr; }
 }
