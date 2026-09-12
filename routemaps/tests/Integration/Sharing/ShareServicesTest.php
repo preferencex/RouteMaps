@@ -88,12 +88,13 @@ final class ShareServicesTest extends WP_UnitTestCase {
         delete_option('routemaps_db_version');
         (new MigrationManager($wpdb,[new Migration001RoutesVersions(),new Migration002PoisCategories(),new Migration003Licenses(),new Migration004AccessSharing()]))->migrate();
         foreach (['routemaps_access_sessions','routemaps_license_users','routemaps_licenses','routemaps_routes'] as $suffix) $wpdb->query('DELETE FROM '.$wpdb->prefix.$suffix);
-        $ownerId=self::factory()->user->create(['user_email'=>'owner@example.test']);
+        $ownerId=self::factory()->user->create();
+        $ownerEmail=(string) get_userdata($ownerId)?->user_email;
         $routes=new WpdbRouteRepository($wpdb); $route=$routes->create('Douro',$ownerId);
         $licenses=new WpdbLicenseRepository($wpdb);
         $license=$licenses->create(['public_token_hash'=>hash('sha256',str_repeat('a',64)),'order_id'=>1,'order_item_id'=>2,'product_id'=>3,'route_id'=>$route->id(),'owner_user_id'=>$ownerId,'status'=>LicenseStatus::ACTIVE,'validity_mode'=>ValidityMode::UNLIMITED,'max_openings'=>10,'openings_used'=>0,'sharing_enabled'=>$sharing,'max_shares'=>$maxShares]);
         $members=new WpdbLicenseUserRepository($wpdb);
-        $members->create(['license_id'=>$license->id(),'user_id'=>$ownerId,'email'=>'owner@example.test','role'=>'owner','status'=>'active']);
+        $members->create(['license_id'=>$license->id(),'user_id'=>$ownerId,'email'=>$ownerEmail,'role'=>'owner','status'=>'active']);
         return [$license,$ownerId,$routes,$licenses,$members,new WpdbAccessSessionRepository($wpdb)];
     }
 }
