@@ -132,9 +132,13 @@ export class RouteMapEditor {
   }
 
   async loadGeometry(geometry) {
+    if (this.geoman) {
+      await this.geoman.features.deleteAll();
+    }
+
     this.setGeometry(geometry || null, false);
+
     if (!this.geoman) return;
-    await this.geoman.features.deleteAll();
     if (geometry && ['LineString', 'MultiLineString'].includes(geometry.type)) {
       await this.geoman.features.importGeoJson({
         type: 'Feature',
