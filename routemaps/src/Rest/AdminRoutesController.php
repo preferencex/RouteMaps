@@ -265,9 +265,10 @@ final class AdminRoutesController {
 
     private function draftFromRequest(WP_REST_Request $request): RouteDraftData {
         $params = $request->get_json_params();
-        if ([] === $params) {
+        if (!is_array($params) || [] === $params) {
             $params = $request->get_params();
         }
+        $params = is_array($params) ? $params : [];
 
         return new RouteDraftData(
             sanitize_text_field((string) ($params['title'] ?? '')),

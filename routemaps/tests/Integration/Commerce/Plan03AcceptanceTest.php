@@ -68,7 +68,9 @@ final class Plan03AcceptanceTest extends WP_UnitTestCase {
 
         $mail = [];
         $capture = static function (mixed $return, array $atts) use (&$mail): bool {
-            $mail[] = $atts;
+            if (str_contains((string) ($atts['message'] ?? ''), '/routemaps/access/')) {
+                $mail[] = $atts;
+            }
             return true;
         };
         add_filter('pre_wp_mail', $capture, 10, 2);

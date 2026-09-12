@@ -21,8 +21,8 @@ final class Migration001Test extends WP_UnitTestCase {
         $routesTable   = $wpdb->prefix . 'routemaps_routes';
         $versionsTable = $wpdb->prefix . 'routemaps_route_versions';
 
-        self::assertSame($routesTable, $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $routesTable)));
-        self::assertSame($versionsTable, $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $versionsTable)));
+        self::assertTrue($this->tableExists($routesTable));
+        self::assertTrue($this->tableExists($versionsTable));
 
         $routeIndexes = $wpdb->get_results("SHOW INDEX FROM {$routesTable}", ARRAY_A);
         self::assertContains('uuid', array_column($routeIndexes, 'Column_name'));
@@ -73,6 +73,15 @@ final class Migration001Test extends WP_UnitTestCase {
         }
 
         self::assertSame(0, (int) get_option('routemaps_db_version', 0));
+    }
+
+    private function tableExists(string $table): bool {
+        global $wpdb;
+        $previous = $wpdb->suppress_errors(true);
+        $columns = $wpdb->get_results("SHOW COLUMNS FROM `{$table}`", ARRAY_A);
+        $wpdb->suppress_errors($previous);
+
+        return is_array($columns) && [] !== $columns;
     }
 
 }

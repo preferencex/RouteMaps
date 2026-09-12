@@ -110,7 +110,12 @@ final class AdminCategoriesController {
     /** @return array<string,mixed> */
     private function params(WP_REST_Request $request): array {
         $params = $request->get_json_params();
-        return [] !== $params ? $params : $request->get_params();
+        if (is_array($params) && [] !== $params) {
+            return $params;
+        }
+
+        $params = $request->get_params();
+        return is_array($params) ? $params : [];
     }
 
     /** @return array<string,mixed> */

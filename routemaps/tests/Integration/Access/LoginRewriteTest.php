@@ -25,7 +25,7 @@ final class LoginRewriteTest extends WP_UnitTestCase {
         $manager->registerRules();
 
         global $wp_rewrite;
-        $rules = $wp_rewrite->wp_rewrite_rules();
+        $rules = $wp_rewrite->extra_rules_top;
 
         self::assertArrayHasKey('routemaps/access/([0-9a-f]{64})/?$', $rules);
         self::assertArrayHasKey('routemaps/login/?$', $rules);
@@ -54,6 +54,13 @@ final class LoginRewriteTest extends WP_UnitTestCase {
             return $seconds;
         };
         add_filter('auth_cookie_expiration', $captureRemember, 10, 3);
+        $wcSession = function_exists('WC') ? WC()->session : null;
+        $wcCookieHookRemoved = is_object($wcSession)
+            && is_callable([$wcSession, 'set_customer_session_cookie'])
+            && false !== has_action('set_logged_in_cookie', [$wcSession, 'set_customer_session_cookie']);
+        if ($wcCookieHookRemoved) {
+            remove_action('set_logged_in_cookie', [$wcSession, 'set_customer_session_cookie'], 10);
+        }
         try {
             $redirect = $controller->authenticate([
                 '_routemaps_login_nonce' => wp_create_nonce('routemaps_login'),
@@ -64,7 +71,10 @@ final class LoginRewriteTest extends WP_UnitTestCase {
             ]);
         } finally {
             remove_filter('auth_cookie_expiration', $captureRemember, 10);
-            wp_logout();
+            if ($wcCookieHookRemoved) {
+                add_action('set_logged_in_cookie', [$wcSession, 'set_customer_session_cookie'], 10, 6);
+            }
+            wp_set_current_user(0);
         }
 
         self::assertTrue($rememberSeen);

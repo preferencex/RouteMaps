@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace RouteMaps\Core\Tests\Integration\Import;
 
 use RouteMaps\Core\Admin\Capabilities;
-use RouteMaps\Core\Bootstrap\Plugin;
 use RouteMaps\Core\Infrastructure\Database\MigrationManager;
 use RouteMaps\Core\Infrastructure\Database\Migrations\Migration001RoutesVersions;
 use RouteMaps\Core\Infrastructure\Database\Migrations\Migration002PoisCategories;
@@ -31,7 +30,7 @@ final class Plan02AcceptanceTest extends WP_UnitTestCase {
             $wpdb->query('DELETE FROM ' . $wpdb->prefix . $suffix);
         }
 
-        Plugin::registerRestRoutes();
+        do_action('rest_api_init');
         $user = self::factory()->user->create_and_get(['role' => 'administrator']);
         wp_set_current_user($user->ID);
     }
