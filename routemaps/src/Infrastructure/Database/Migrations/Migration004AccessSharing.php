@@ -71,15 +71,55 @@ final class Migration004AccessSharing implements MigrationInterface {
         ) {$charsetCollate};");
 
         $users = $db->users;
-        $db->query(
-            "INSERT INTO {$licenseUsers} (license_id,user_id,email,role,status,invite_token_hash,created_at,updated_at)
-             SELECT l.id,l.owner_user_id,LOWER(COALESCE(u.user_email,'')),'owner','active',NULL,l.created_at,l.updated_at
+        $owners = $db->get_results(
+            "SELECT l.id AS license_id,l.owner_user_id,LOWER(COALESCE(u.user_email,'')) AS email,l.created_at,l.updated_at
              FROM {$licenses} l
-             LEFT JOIN {$users} u ON u.ID = l.owner_user_id
-             WHERE NOT EXISTS (
-                 SELECT 1 FROM {$licenseUsers} lu
-                 WHERE lu.license_id = l.id AND lu.role = 'owner'
-             )"
+             LEFT JOIN {$users} u ON u.ID = l.owner_user_id",
+            ARRAY_A
         );
+
+        if (!is_array($owners)) {
+            return;
+        }
+
+        /*
+         * Deliberately avoid an INSERT ... SELECT that reads $licenseUsers while
+         * inserting into it. WordPress' PHPUnit base case rewrites plugin CREATE
+         * TABLE statements to CREATE TEMPORARY TABLE, and MySQL cannot reopen the
+         * same temporary table as both the write target and a subquery source.
+         * The row-by-row backfill is migration-only work and is idempotent.
+         */
+        foreach ($owners as $owner) {
+            $licenseId = (int) ($owner['license_id'] ?? 0);
+            if ($licenseId <= 0) {
+                continue;
+            }
+
+            $existingOwnerId = $db->get_var(
+                $db->prepare(
+                    "SELECT id FROM {$licenseUsers} WHERE license_id = %d AND role = %s LIMIT 1",
+                    $licenseId,
+                    'owner'
+                )
+            );
+            if (null !== $existingOwnerId) {
+                continue;
+            }
+
+            $db->insert(
+                $licenseUsers,
+                [
+                    'license_id' => $licenseId,
+                    'user_id' => (int) ($owner['owner_user_id'] ?? 0),
+                    'email' => (string) ($owner['email'] ?? ''),
+                    'role' => 'owner',
+                    'status' => 'active',
+                    'invite_token_hash' => null,
+                    'created_at' => (string) ($owner['created_at'] ?? ''),
+                    'updated_at' => (string) ($owner['updated_at'] ?? ''),
+                ],
+                ['%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s']
+            );
+        }
     }
 }
