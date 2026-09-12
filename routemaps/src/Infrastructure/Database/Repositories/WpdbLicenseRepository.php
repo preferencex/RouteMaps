@@ -207,7 +207,7 @@ final class WpdbLicenseRepository implements LicenseRepositoryInterface {
         }
         foreach (['order_id', 'order_item_id', 'product_id', 'route_id', 'owner_user_id'] as $field) {
             if ((int) ($data[$field] ?? 0) <= 0) {
-                throw new InvalidArgumentException('license_' . $field . '_required');
+                throw new InvalidArgumentException('license_' . $field . '_required'); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Internal field name and machine-readable error code.
             }
         }
 
