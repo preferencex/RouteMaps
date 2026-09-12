@@ -89,11 +89,16 @@ for forbidden in \
   '/test-results/' \
   '/coverage/' \
   '/.phpstan-cache' \
-  '/.phpunit.result.cache'; do
+  '/.phpunit.result.cache' \
+  '/docs/'; do
   if grep -Fq "$forbidden" <<<"$entries"; then
     fail "development-only path found in archive: $forbidden"
   fi
 done
+
+if grep -Eq '\.map$' <<<"$entries"; then
+  fail 'source map found in release archive'
+fi
 
 for required in "${required_paths[@]}"; do
   grep -Fxq "$required" <<<"$entries" || fail "archive missing required path: $required"
