@@ -286,15 +286,17 @@ class RouteMapsAdminApp {
     this.root.querySelector('[data-field="route-color"]').value = this.draft.style.color || '#00A099';
     this.root.querySelector('[data-field="route-width"]').value = this.draft.style.width || 4;
 
+    if (this.mapEditor) {
+      this.mapEditor.destroy();
+      this.mapEditor = null;
+    }
+
     // Render imported content before the map starts. A basemap problem must
     // never make valid imported route data look empty.
     this.renderStops(false);
     this.renderSelectedPois();
     this.renderCategoryFilters();
 
-    if (this.mapEditor) {
-      this.mapEditor.destroy();
-    }
     const mapConfig = this.config.map || {};
     this.mapEditor = new RouteMapEditor(this.root.querySelector('#routemaps-editor-map'), {
       styleUrl: mapConfig.styleUrl || mapConfig.openFreeMapStyleUrl,
