@@ -72,7 +72,7 @@ final class LoginController {
         }
 
         $nonce = isset($_POST['_routemaps_login_nonce'])
-            ? (string) wp_unslash($_POST['_routemaps_login_nonce'])
+            ? sanitize_text_field(wp_unslash((string) $_POST['_routemaps_login_nonce']))
             : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce is verified immediately below.
         if ('' === $nonce || !wp_verify_nonce($nonce, 'routemaps_login')) {
             wp_safe_redirect($this->loginUrl('', 'login_csrf'));
