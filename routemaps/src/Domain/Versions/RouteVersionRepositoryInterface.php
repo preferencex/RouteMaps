@@ -15,4 +15,5 @@ interface RouteVersionRepositoryInterface {
     public function updateDraft(int $versionId, string $snapshotJson, int $userId): RouteVersion;
     public function updateSnapshot(int $versionId, string $snapshotJson, string $contentHash): RouteVersion;
     public function markPublished(int $versionId, bool $critical, ?string $summary, string $publishedAt): RouteVersion;
+    public function deleteForRoute(int $routeId): void;
 }
