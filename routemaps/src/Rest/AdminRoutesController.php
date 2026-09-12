@@ -15,10 +15,12 @@ use RouteMaps\Core\Domain\Routes\RouteRepositoryInterface;
 use RouteMaps\Core\Domain\Versions\RoutePublisher;
 use RouteMaps\Core\Domain\Versions\RouteVersion;
 use RouteMaps\Core\Domain\Versions\RouteVersionRepositoryInterface;
+use RouteMaps\Core\Infrastructure\Database\TransactionManager;
 use RuntimeException;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
+use wpdb;
 
 final class AdminRoutesController {
     private const NAMESPACE = 'routemaps/v1';
@@ -28,7 +30,8 @@ final class AdminRoutesController {
         private RouteVersionRepositoryInterface $versions,
         private RouteDraftService $drafts,
         private RoutePublisher $publisher,
-        private RouteDuplicateService $duplicator
+        private RouteDuplicateService $duplicator,
+        private wpdb $db
     ) {
     }
 
@@ -57,9 +60,16 @@ final class AdminRoutesController {
             ],
         ]);
         register_rest_route(self::NAMESPACE, '/admin/routes/(?P<id>\d+)', [
-            'methods' => 'GET',
-            'callback' => [$this, 'show'],
-            'permission_callback' => [$this, 'canEdit'],
+            [
+                'methods' => 'GET',
+                'callback' => [$this, 'show'],
+                'permission_callback' => [$this, 'canEdit'],
+            ],
+            [
+                'methods' => 'DELETE',
+                'callback' => [$this, 'delete'],
+                'permission_callback' => [$this, 'canEdit'],
+            ],
         ]);
         register_rest_route(self::NAMESPACE, '/admin/routes/(?P<id>\d+)/draft', [
             'methods' => 'PUT',
@@ -151,6 +161,41 @@ final class AdminRoutesController {
         }
 
         return new WP_REST_Response($this->routeData($route), 201);
+    }
+
+    public function delete(WP_REST_Request $request): WP_REST_Response|WP_Error {
+        $routeId = (int) $request->get_param('id');
+        $route = $this->routes->find($routeId);
+        if (null === $route) {
+            return $this->error('route_not_found', __('Route not found.', 'routemaps'), 404);
+        }
+
+        if ($this->routeHasLicenses($routeId)) {
+            return $this->error(
+                'route_has_licenses',
+                __('Esta rota tem licenças associadas e não pode ser eliminada.', 'routemaps'),
+                409
+            );
+        }
+
+        if ($this->routeLinkedToProduct($routeId)) {
+            return $this->error(
+                'route_linked_to_product',
+                __('Esta rota está associada a um produto WooCommerce. Remova primeiro essa associação.', 'routemaps'),
+                409
+            );
+        }
+
+        try {
+            (new TransactionManager($this->db))->run(function () use ($routeId): void {
+                $this->versions->deleteForRoute($routeId);
+                $this->routes->delete($routeId);
+            });
+        } catch (RuntimeException $exception) {
+            return $this->domainError($exception);
+        }
+
+        return new WP_REST_Response(['deleted' => true, 'id' => $routeId], 200);
     }
 
     public function show(WP_REST_Request $request): WP_REST_Response|WP_Error {
@@ -340,6 +385,34 @@ final class AdminRoutesController {
             throw new RuntimeException('route_snapshot_invalid');
         }
         return $data;
+    }
+
+    private function routeHasLicenses(int $routeId): bool {
+        $table = $this->db->prefix . 'routemaps_licenses';
+        if (!$this->tableExists($table)) {
+            return false;
+        }
+
+        return (int) $this->db->get_var(
+            $this->db->prepare("SELECT COUNT(*) FROM {$table} WHERE route_id = %d", $routeId)
+        ) > 0;
+    }
+
+    private function routeLinkedToProduct(int $routeId): bool {
+        $postmeta = $this->db->postmeta;
+        return (int) $this->db->get_var(
+            $this->db->prepare(
+                "SELECT COUNT(*) FROM {$postmeta} WHERE meta_key = %s AND meta_value = %s",
+                '_routemaps_route_id',
+                (string) $routeId
+            )
+        ) > 0;
+    }
+
+    private function tableExists(string $table): bool {
+        return $table === (string) $this->db->get_var(
+            $this->db->prepare('SHOW TABLES LIKE %s', $table)
+        );
     }
 
     private function domainError(\Throwable $exception): WP_Error {
