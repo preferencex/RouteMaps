@@ -39,13 +39,16 @@ final class AdminImportRestTest extends WP_UnitTestCase {
         $validator = new ImportFileValidator();
         $registry = new ImporterRegistry([new GeoJsonRouteImporter($validator)]);
         $categories = new WpdbCategoryRepository($wpdb);
-        (new AdminImportController(
+        $controller = new AdminImportController(
             $validator,
             $registry,
             $this->routes,
             new RouteDraftService($versions),
             $categories
-        ))->registerRoutes();
+        );
+        add_action('rest_api_init', [$controller, 'registerRoutes'], 999);
+        do_action('rest_api_init');
+        remove_action('rest_api_init', [$controller, 'registerRoutes'], 999);
     }
 
     protected function tearDown(): void {
