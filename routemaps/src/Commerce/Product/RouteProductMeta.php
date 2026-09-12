@@ -139,11 +139,11 @@ final class RouteProductMeta {
             return null;
         }
         if (false === filter_var($value, FILTER_VALIDATE_INT)) {
-            throw new InvalidArgumentException($error);
+            throw new InvalidArgumentException($error); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Internal RouteMaps error code.
         }
         $number = (int) $value;
         if ($number < 0) {
-            throw new InvalidArgumentException($error);
+            throw new InvalidArgumentException($error); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Internal RouteMaps error code.
         }
         return $number;
     }
