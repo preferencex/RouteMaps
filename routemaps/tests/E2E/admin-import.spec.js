@@ -101,6 +101,13 @@ test('keeps editor zoom, fit and route deletion controls functional', async ({ p
 test('toggles route draw and edit modes with explicit toolbar guidance', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop', 'Admin map modes only need one browser viewport.');
 
+  const workerResponses = [];
+  page.on('response', (response) => {
+    if (response.url().includes('maplibre-gl-worker-')) {
+      workerResponses.push({ url: response.url(), status: response.status() });
+    }
+  });
+
   const missing = requiredEnv(prerequisites);
   if (missing.length > 0 && process.env.CI) throw new Error(`Missing release E2E environment: ${missing.join(', ')}`);
   test.skip(missing.length > 0, `Missing E2E environment: ${missing.join(', ')}`);
@@ -108,6 +115,11 @@ test('toggles route draw and edit modes with explicit toolbar guidance', async (
   await loginWordPress(page, env('ROUTEMAPS_E2E_ADMIN_USER'), env('ROUTEMAPS_E2E_ADMIN_PASSWORD'));
   await openRouteMapsAdmin(page);
   await importFixtureRoute(page, importFixture);
+
+  await expect.poll(() => workerResponses.some((response) => (
+    response.status === 200
+    && response.url.includes('/wp-content/plugins/routemaps/assets/admin/assets/maplibre-gl-worker-')
+  )), { timeout: 15_000 }).toBe(true);
 
   await expect.poll(() => page.evaluate(() => Boolean(globalThis.RouteMapsAdminApp?.mapEditor?.geoman))).toBe(true);
 
