@@ -1,0 +1,36 @@
+name: Fix RouteMaps E2E seed
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/fix-e2e-seed.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix-seed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout work branch
+        uses: actions/checkout@v4
+        with:
+          ref: work/ci-fixes-1
+          fetch-depth: 0
+
+      - name: Remove strict_types from WP-CLI eval-file seed
+        shell: bash
+        run: |
+          set -euo pipefail
+          file='routemaps/tests/E2E/ci-seed.php'
+          grep -q '^declare(strict_types=1);$' "$file"
+          sed -i '/^declare(strict_types=1);$/d' "$file"
+          git diff --check
+          git diff --exit-code --quiet && { echo 'No change produced' >&2; exit 1; }
+          git config user.name 'RouteMaps CI Bootstrap'
+          git config user.email 'actions@users.noreply.github.com'
+          git add "$file"
+          git commit -m 'ci: make E2E seed compatible with wp eval-file'
+          git push origin HEAD:work/ci-fixes-1
