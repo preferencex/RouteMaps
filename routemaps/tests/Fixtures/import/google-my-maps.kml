@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Douro My Maps</name>
+    <Style id="route-style">
+      <LineStyle>
+        <color>ff99a000</color>
+        <width>5</width>
+      </LineStyle>
+    </Style>
+    <Style id="poi-style">
+      <IconStyle><color>ff99a000</color></IconStyle>
+      <BalloonStyle><text>$[description]</text></BalloonStyle>
+    </Style>
+    <Folder>
+      <name>Miradouros</name>
+      <Placemark>
+        <name>Miradouro de São Leonardo</name>
+        <description><![CDATA[<p>Vista sobre o <strong>Douro</strong>.</p><script>alert(1)</script>]]></description>
+        <styleUrl>#poi-style</styleUrl>
+        <ExtendedData>
+          <Data name="phone"><value>+351 254 000 000</value></Data>
+          <Data name="website"><value>https://example.test/miradouro</value></Data>
+        </ExtendedData>
+        <Point><coordinates>-7.7900000,41.1600000,0</coordinates></Point>
+      </Placemark>
+    </Folder>
+    <Placemark>
+      <name>Percurso principal</name>
+      <description>Ligação principal do roteiro.</description>
+      <styleUrl>#route-style</styleUrl>
+      <LineString>
+        <coordinates>
+          -8.6100000,41.1500000,0 -8.1000000,41.1200000,0 -7.7900000,41.1600000,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+  </Document>
+</kml>

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/wp-env.json",
+  "core": "https://wordpress.org/wordpress-6.8.3.zip",
+  "phpVersion": "8.2",
+  "plugins": [
+    "https://downloads.wordpress.org/plugin/woocommerce.10.3.5.zip",
+    "./tests/E2E/ci-mail-capture",
+    "."
+  ],
+  "port": 8080,
+  "config": {
+    "WP_DEBUG": true,
+    "SCRIPT_DEBUG": true,
+    "ROUTEMAPS_CI_E2E": true
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "FeatureCollection",
+  "name": "Rota GeoJSON",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {"name": "Percurso GeoJSON", "stroke": "#00A099", "stroke-width": 4},
+      "geometry": {"type": "LineString", "coordinates": [[-8.61, 41.15], [-8.1, 41.12], [-7.79, 41.16]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"name": "Restaurante Ribeira", "description": "<p>Paragem recomendada.</p>", "category": "Restaurantes"},
+      "geometry": {"type": "Point", "coordinates": [-8.605, 41.142]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"name": "Zona histórica"},
+      "geometry": {"type": "Polygon", "coordinates": [[[-8.62,41.14],[-8.60,41.14],[-8.60,41.15],[-8.62,41.14]]]}
+    }
+  ]
+}

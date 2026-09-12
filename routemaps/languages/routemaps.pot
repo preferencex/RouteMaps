@@ -1,0 +1,1031 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: RouteMaps 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-12 01:47+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: routemaps\n"
+
+#: src/Support/JavaScriptTranslations.php:15
+#, php-format
+msgid "%s pontos"
+msgstr ""
+
+#: assets-src/admin/index.js:510 src/Support/JavaScriptTranslations.php:11
+msgid "A analisar…"
+msgstr ""
+
+#: src/Admin/RoutesPage.php:76
+msgid "A carregar o editor RouteMaps…"
+msgstr ""
+
+#: src/Commerce/Product/RouteProductPanel.php:145
+#, php-format
+msgid "A configuração RouteMaps é inválida: %s"
+msgstr ""
+
+#: assets-src/admin/index.js:558 src/Support/JavaScriptTranslations.php:14
+msgid "A criar rascunho…"
+msgstr ""
+
+#: assets-src/viewer/index.js:61 src/Support/JavaScriptTranslations.php:16
+msgid "A minha localização"
+msgstr ""
+
+#: src/Maps/Providers/PMTilesMapSourceProvider.php:48
+msgid "A origem PMTiles externa não é permitida."
+msgstr ""
+
+#: src/Maps/Providers/PMTilesMapSourceProvider.php:45
+msgid "A origem PMTiles externa tem de utilizar HTTPS."
+msgstr ""
+
+#: src/Maps/Providers/PMTilesMapSourceProvider.php:66
+msgid "A origem PMTiles não confirmou suporte a byte-range."
+msgstr ""
+
+#: templates/login.php:11
+msgid "A sessão do formulário expirou. Tente novamente."
+msgstr ""
+
+#: templates/emails/route-access.php:11
+msgid "A sua compra foi confirmada e o roteiro já está disponível."
+msgstr ""
+
+#: assets-src/viewer/state.js:51 src/Support/JavaScriptTranslations.php:17
+msgid "A validade deste acesso terminou."
+msgstr ""
+
+#: src/Admin/LicensesPage.php:81
+msgid "Aberturas"
+msgstr ""
+
+#: assets-src/viewer/pois.js:32 src/Support/JavaScriptTranslations.php:18
+msgid "Abrir"
+msgstr ""
+
+#: assets-src/viewer/pois.js:139 src/Support/JavaScriptTranslations.php:19
+#, php-format
+msgid "Abrir no %s"
+msgstr ""
+
+#: templates/emails/route-access.php:15
+msgid "Abrir roteiro"
+msgstr ""
+
+#: templates/login.php:37
+msgid "Aceda ao seu roteiro"
+msgstr ""
+
+#: templates/login.php:23
+msgid "Aceder ao RouteMaps"
+msgstr ""
+
+#: templates/emails/share-invite.php:15
+msgid "Aceitar convite"
+msgstr ""
+
+#: assets-src/viewer/state.js:51 src/Support/JavaScriptTranslations.php:20
+msgid "Acesso expirado"
+msgstr ""
+
+#: assets-src/viewer/state.js:59 src/Support/JavaScriptTranslations.php:21
+msgid "Acesso indisponível"
+msgstr ""
+
+#: assets-src/viewer/state.js:54 src/Support/JavaScriptTranslations.php:22
+msgid "Acesso revogado"
+msgstr ""
+
+#: assets-src/viewer/index.js:140 src/Support/JavaScriptTranslations.php:23
+msgid "Acesso rápido ao RouteMaps"
+msgstr ""
+
+#: assets-src/viewer/state.js:53 src/Support/JavaScriptTranslations.php:24
+msgid "Acesso suspenso"
+msgstr ""
+
+#: assets-src/admin/index.js:374 src/Support/JavaScriptTranslations.php:25
+msgid "Adicionar"
+msgstr ""
+
+#: assets-src/viewer/index.js:149 src/Support/JavaScriptTranslations.php:26
+msgid "Adicionar atalho"
+msgstr ""
+
+#: assets-src/admin/index.js:89 src/Support/JavaScriptTranslations.php:27
+msgid "Adicionar paragem"
+msgstr ""
+
+#: assets-src/viewer/index.js:146 src/Support/JavaScriptTranslations.php:28
+msgid "Adicione este roteiro ao ecrã principal para o abrir mais rapidamente."
+msgstr ""
+
+#: assets-src/viewer/index.js:162 src/Support/JavaScriptTranslations.php:29
+msgid "Agora não"
+msgstr ""
+
+#: assets-src/admin/index.js:219 src/Support/JavaScriptTranslations.php:30
+msgid "Ainda não existem rotas."
+msgstr ""
+
+#: assets-src/admin/index.js:144 src/Support/JavaScriptTranslations.php:31
+msgid "Analisar ficheiro"
+msgstr ""
+
+#: src/Privacy/PersonalDataEraser.php:64
+msgid "As licenças do titular associadas a encomendas WooCommerce foram conservadas de acordo com a política de retenção comercial da loja."
+msgstr ""
+
+#: src/Support/SystemHealthService.php:79
+msgid "Asset disponível e contexto HTTPS ativo."
+msgstr ""
+
+#: src/Support/SystemHealthService.php:79
+msgid "Asset disponível; o browser necessita de HTTPS ou localhost para o registar."
+msgstr ""
+
+#: src/Commerce/Product/RouteProductPanel.php:52
+msgid "Ativar RouteMaps"
+msgstr ""
+
+#: src/Support/SystemHealthService.php:57
+msgid "Ativo"
+msgstr ""
+
+#: src/Privacy/PersonalDataExporter.php:56 src/Privacy/PersonalDataExporter.php:67
+msgid "Atualizada em"
+msgstr ""
+
+#: src/Rest/AdminCategoriesController.php:35 src/Rest/AdminImportController.php:67 src/Rest/AdminLicensesController.php:64 src/Rest/AdminPoisController.php:40 src/Rest/AdminRoutesController.php:112 src/Rest/ViewerAccessController.php:72 src/Rest/ViewerRouteController.php:58 src/Rest/ViewerSharesController.php:43
+msgid "Authentication required."
+msgstr ""
+
+#: assets-src/admin/index.js:531 src/Support/JavaScriptTranslations.php:32
+msgid "Avisos de importação"
+msgstr ""
+
+#: src/Admin/LicensesPage.php:82
+msgid "Ações"
+msgstr ""
+
+#: assets-src/admin/index.js:136 src/Support/JavaScriptTranslations.php:33
+msgid "Cancelar"
+msgstr ""
+
+#: assets-src/admin/index.js:541 assets-src/viewer/index.js:183 src/Support/JavaScriptTranslations.php:13
+msgid "Categoria"
+msgstr ""
+
+#: src/Admin/LicensesPage.php:75
+msgid "Cliente"
+msgstr ""
+
+#: src/Maps/Providers/MapTilerMapSourceProvider.php:27
+msgid "Configure a chave MapTiler."
+msgstr ""
+
+#: src/Maps/Providers/PMTilesMapSourceProvider.php:42
+msgid "Configure uma URL ou caminho PMTiles."
+msgstr ""
+
+#: src/Commerce/Email/RouteShareInviteEmail.php:48
+#, php-format
+msgid "Convite para aceder ao roteiro \"%s\""
+msgstr ""
+
+#: src/Rest/AdminImportController.php:78
+msgid "Cookie check failed."
+msgstr ""
+
+#: assets-src/admin/index.js:99 src/Support/JavaScriptTranslations.php:34
+msgid "Cor"
+msgstr ""
+
+#: src/Privacy/PersonalDataExporter.php:55 src/Privacy/PersonalDataExporter.php:66
+msgid "Criada em"
+msgstr ""
+
+#: assets-src/admin/index.js:147 src/Support/JavaScriptTranslations.php:35
+msgid "Criar rascunho"
+msgstr ""
+
+#: assets-src/admin/index.js:136 src/Support/JavaScriptTranslations.php:36
+msgid "Criar rota"
+msgstr ""
+
+#: assets-src/admin/index.js:55 src/Support/JavaScriptTranslations.php:37
+msgid "Crie, importe, organize e publique roteiros digitais."
+msgstr ""
+
+#: src/Privacy/PersonalDataExporter.php:77
+msgid "Data"
+msgstr ""
+
+#: assets-src/admin/index.js:436 src/Support/JavaScriptTranslations.php:38
+msgid "Defina o nome da rota."
+msgstr ""
+
+#: src/Admin/MapSettingsPage.php:64
+msgid "Definições guardadas."
+msgstr ""
+
+#: src/Commerce/Product/RouteProductPanel.php:93
+msgid "Deixe vazio para ilimitado."
+msgstr ""
+
+#: assets-src/admin/index.js:87 src/Support/JavaScriptTranslations.php:39
+msgid "Desenhar percurso"
+msgstr ""
+
+#: assets-src/admin/index.js:433 src/Support/JavaScriptTranslations.php:40
+msgid "Desenhe primeiro o percurso da rota."
+msgstr ""
+
+#: assets-src/viewer/pois.js:135 src/Support/JavaScriptTranslations.php:41
+msgid "Destino"
+msgstr ""
+
+#: src/Admin/SystemStatusPage.php:45
+msgid "Diagnóstico técnico sem tokens, palavras-passe ou chaves de fornecedor."
+msgstr ""
+
+#: src/Admin/LicensesPage.php:65
+msgid "Dias após compra"
+msgstr ""
+
+#: src/Admin/LicensesPage.php:66
+msgid "Dias após primeira utilização"
+msgstr ""
+
+#: src/Commerce/Product/RouteProductPanel.php:72
+msgid "Dias de validade"
+msgstr ""
+
+#: src/Commerce/Product/RouteProductPanel.php:65
+msgid "Dias desde a compra"
+msgstr ""
+
+#: src/Commerce/Product/RouteProductPanel.php:66
+msgid "Dias desde a primeira utilização"
+msgstr ""
+
+#: src/Admin/LicensesPage.php:53
+msgid "E-mail"
+msgstr ""
+
+#: src/Privacy/PersonalDataExporter.php:62
+msgid "E-mail do convite"
+msgstr ""
+
+#: templates/login.php:43
+msgid "E-mail ou utilizador"
+msgstr ""
+
+#: assets-src/viewer/index.js:61 src/Support/JavaScriptTranslations.php:42
+msgid "Ecrã inteiro"
+msgstr ""
+
+#: assets-src/admin/index.js:88 src/Support/JavaScriptTranslations.php:43
+msgid "Editar percurso"
+msgstr ""
+
+#: assets-src/admin/index.js:54 src/Support/JavaScriptTranslations.php:44
+msgid "Editor de rotas"
+msgstr ""
+
+#: src/Admin/LicensesPage.php:77
+msgid "Encomenda"
+msgstr ""
+
+#: assets-src/admin/index.js:90 src/Support/JavaScriptTranslations.php:45
+msgid "Enquadrar"
+msgstr ""
+
+#: templates/login.php:48
+msgid "Entrar"
+msgstr ""
+
+#: templates/login.php:38
+msgid "Entre com a conta associada ao seu acesso RouteMaps."
+msgstr ""
+
+#: assets-src/admin/api.js:38 assets-src/viewer/api.js:26 src/Support/JavaScriptTranslations.php:46
+#, php-format
+msgid "Erro da API RouteMaps (%s)"
+msgstr ""
+
+#: src/Support/SystemHealthService.php:95
+msgid "Erros RouteMaps recentes"
+msgstr ""
+
+#: assets-src/admin/index.js:100 src/Support/JavaScriptTranslations.php:47
+msgid "Espessura"
+msgstr ""
+
+#: src/Admin/MapSettingsPage.php:79
+msgid "Esta chave é usada pelo browser e pode ficar visível nos pedidos ao mapa. Restrinja-a aos domínios autorizados na MapTiler. Não introduza aqui um service token."
+msgstr ""
+
+#: src/Admin/LicensesPage.php:78 src/Admin/SystemStatusPage.php:47 src/Privacy/PersonalDataExporter.php:50 src/Privacy/PersonalDataExporter.php:65
+msgid "Estado"
+msgstr ""
+
+#: src/Admin/SystemStatusPage.php:29 src/Admin/SystemStatusPage.php:30
+msgid "Estado do sistema"
+msgstr ""
+
+#: assets-src/viewer/state.js:53 src/Support/JavaScriptTranslations.php:48
+msgid "Este acesso encontra-se temporariamente suspenso."
+msgstr ""
+
+#: assets-src/viewer/state.js:54 src/Support/JavaScriptTranslations.php:49
+msgid "Este acesso já não está disponível."
+msgstr ""
+
+#: src/Support/SystemHealthService.php:50
+msgid "Estrutura simples"
+msgstr ""
+
+#: src/Privacy/PersonalDataExporter.php:73
+msgid "Evento"
+msgstr ""
+
+#: src/Privacy/PersonalDataExporter.php:72
+msgid "Evento de acesso"
+msgstr ""
+
+#: src/Admin/MapSettingsPage.php:75
+msgid "Fallback"
+msgstr ""
+
+#: assets-src/admin/index.js:141 assets-src/viewer/pois.js:103 src/Support/JavaScriptTranslations.php:50
+msgid "Fechar"
+msgstr ""
+
+#: assets-src/admin/index.js:514 src/Support/JavaScriptTranslations.php:12
+msgid "Ficheiro analisado."
+msgstr ""
+
+#: src/Admin/LicensesPage.php:69
+msgid "Filtrar"
+msgstr ""
+
+#: assets-src/admin/index.js:122 src/Support/JavaScriptTranslations.php:51
+msgid "Filtros de categorias"
+msgstr ""
+
+#: src/Commerce/Email/RouteShareInviteEmail.php:37
+msgid "Foi convidado para um roteiro RouteMaps"
+msgstr ""
+
+#: src/Admin/MapSettingsPage.php:74
+msgid "Fonte principal"
+msgstr ""
+
+#: src/Support/SystemHealthService.php:62
+msgid "Fontes do mapa"
+msgstr ""
+
+#: templates/login.php:14
+msgid "Foram efetuadas demasiadas tentativas. Tente novamente mais tarde."
+msgstr ""
+
+#: assets-src/viewer/index.js:108 src/Support/JavaScriptTranslations.php:52
+msgid "Geolocalização não suportada"
+msgstr ""
+
+#: src/Admin/MapSettingsPage.php:82
+msgid "Guardar definições"
+msgstr ""
+
+#: assets-src/admin/index.js:80 src/Support/JavaScriptTranslations.php:53
+msgid "Guardar rascunho"
+msgstr ""
+
+#: assets-src/viewer/pois.js:125 src/Support/JavaScriptTranslations.php:54
+msgid "Horário"
+msgstr ""
+
+#: src/Support/SystemHealthService.php:55
+msgid "HTTPS"
+msgstr ""
+
+#: src/Admin/LicensesPage.php:55
+msgid "ID da encomenda"
+msgstr ""
+
+#: src/Admin/LicensesPage.php:54
+msgid "ID da rota"
+msgstr ""
+
+#: src/Admin/LicensesPage.php:52
+msgid "ID do titular"
+msgstr ""
+
+#: src/Admin/LicensesPage.php:64 src/Commerce/Product/RouteProductPanel.php:64
+msgid "Ilimitada"
+msgstr ""
+
+#: assets-src/admin/index.js:58 src/Support/JavaScriptTranslations.php:55
+msgid "Importar KML/KMZ/GeoJSON"
+msgstr ""
+
+#: assets-src/admin/index.js:141 src/Support/JavaScriptTranslations.php:56
+msgid "Importar roteiro"
+msgstr ""
+
+#: assets-src/admin/index.js:141 src/Support/JavaScriptTranslations.php:57
+msgid "Importação"
+msgstr ""
+
+#: src/Support/SystemHealthService.php:57
+msgid "Inativo"
+msgstr ""
+
+#: assets-src/viewer/index.js:208 src/Support/JavaScriptTranslations.php:58
+msgid "Iniciar sessão"
+msgstr ""
+
+#: assets-src/viewer/state.js:50 src/Support/JavaScriptTranslations.php:59
+msgid "Inicie sessão"
+msgstr ""
+
+#: src/Commerce/Product/RouteProductPanel.php:67
+msgid "Intervalo de datas"
+msgstr ""
+
+#: src/Admin/LicensesPage.php:67
+msgid "Intervalo fixo"
+msgstr ""
+
+#: src/Admin/LicensesPage.php:74 src/Privacy/PersonalDataExporter.php:48 src/Privacy/PersonalDataExporter.php:63 src/Privacy/PersonalDataExporter.php:75
+msgid "Licença"
+msgstr ""
+
+#: src/Privacy/PersonalDataExporter.php:47
+msgid "Licença do titular"
+msgstr ""
+
+#: src/Admin/LicensesPage.php:20 src/Admin/LicensesPage.php:21
+msgid "Licenças"
+msgstr ""
+
+#: src/Admin/LicensesPage.php:49
+msgid "Licenças RouteMaps"
+msgstr ""
+
+#: assets-src/viewer/state.js:52 src/Support/JavaScriptTranslations.php:60
+msgid "Limite atingido"
+msgstr ""
+
+#: assets-src/viewer/index.js:100 assets-src/viewer/index.js:99 src/Support/JavaScriptTranslations.php:61
+msgid "Localização ativa"
+msgstr ""
+
+#: assets-src/viewer/index.js:102 src/Support/JavaScriptTranslations.php:62
+msgid "Localização indisponível"
+msgstr ""
+
+#: templates/login.php:47
+msgid "Manter sessão iniciada"
+msgstr ""
+
+#: src/Admin/MapSettingsPage.php:26 src/Admin/MapSettingsPage.php:27
+msgid "Mapas"
+msgstr ""
+
+#: src/Maps/Providers/MapTilerMapSourceProvider.php:29
+msgid "MapTiler configurado."
+msgstr ""
+
+#: src/Admin/MapSettingsPage.php:79
+msgid "MapTiler — browser API key"
+msgstr ""
+
+#: assets-src/admin/index.js:464 src/Support/JavaScriptTranslations.php:63
+msgid "Marcar esta atualização como crítica?\n\nOK = crítica · Cancelar = atualização normal"
+msgstr ""
+
+#: assets-src/admin/index.js:480 src/Support/JavaScriptTranslations.php:64
+msgid "Modo de edição ativo."
+msgstr ""
+
+#: assets-src/admin/index.js:480 src/Support/JavaScriptTranslations.php:65
+msgid "Modo de pré-visualização ativo."
+msgstr ""
+
+#: assets-src/viewer/pois.js:125 src/Support/JavaScriptTranslations.php:66
+msgid "Morada"
+msgstr ""
+
+#: src/Privacy/PersonalDataExporter.php:74
+msgid "Motivo"
+msgstr ""
+
+#: assets-src/admin/index.js:342 src/Support/JavaScriptTranslations.php:67
+msgid "Mover para baixo"
+msgstr ""
+
+#: assets-src/admin/index.js:341 src/Support/JavaScriptTranslations.php:68
+msgid "Mover para cima"
+msgstr ""
+
+#: src/Commerce/Product/RouteProductPanel.php:90
+msgid "Máximo de aberturas"
+msgstr ""
+
+#: src/Commerce/Product/RouteProductPanel.php:101
+msgid "Máximo de partilhas"
+msgstr ""
+
+#: src/Maps/MapSourceRegistry.php:67
+msgid "Nenhuma fonte de mapa está configurada."
+msgstr ""
+
+#: assets-src/viewer/index.js:156 src/Support/JavaScriptTranslations.php:69
+msgid "No Safari, toque em Partilhar e escolha “Adicionar ao ecrã principal”."
+msgstr ""
+
+#: assets-src/admin/index.js:135 src/Support/JavaScriptTranslations.php:70
+msgid "Nome"
+msgstr ""
+
+#: assets-src/admin/index.js:75 src/Support/JavaScriptTranslations.php:71
+msgid "Nome da rota"
+msgstr ""
+
+#: src/Admin/SystemStatusPage.php:47
+msgid "Nota"
+msgstr ""
+
+#: assets-src/admin/index.js:134 assets-src/admin/index.js:59 src/Support/JavaScriptTranslations.php:72
+msgid "Nova rota"
+msgstr ""
+
+#: src/Admin/SystemStatusPage.php:69
+msgid "Não"
+msgstr ""
+
+#: src/Support/SystemHealthService.php:45
+msgid "Não detetado"
+msgstr ""
+
+#: assets-src/viewer/state.js:60 src/Support/JavaScriptTranslations.php:73
+msgid "Não foi possível abrir este roteiro."
+msgstr ""
+
+#: assets-src/viewer/index.js:54 src/Support/JavaScriptTranslations.php:74
+msgid "Não foi possível abrir o roteiro."
+msgstr ""
+
+#: templates/login.php:13
+msgid "Não foi possível iniciar sessão com esses dados."
+msgstr ""
+
+#: assets-src/viewer/index.js:105 src/Support/JavaScriptTranslations.php:75
+msgid "Não foi possível obter a localização"
+msgstr ""
+
+#: src/Maps/Providers/PMTilesMapSourceProvider.php:60
+msgid "Não foi possível validar a origem PMTiles."
+msgstr ""
+
+#: assets-src/admin/index.js:459 src/Support/JavaScriptTranslations.php:76
+msgid "Não tem permissão para publicar rotas."
+msgstr ""
+
+#: src/Admin/MapSettingsPage.php:36
+msgid "Não tem permissões para alterar as definições de mapas."
+msgstr ""
+
+#: templates/emails/route-access.php:18
+msgid "O acesso requer autenticação na conta autorizada."
+msgstr ""
+
+#: src/Support/SystemHealthService.php:80
+msgid "O asset do service worker não foi encontrado."
+msgstr ""
+
+#: src/Admin/MapSettingsPage.php:77
+msgid "O caminho nunca é enviado ao browser; quando usado, o ficheiro é servido por um endpoint RouteMaps controlado."
+msgstr ""
+
+#: templates/emails/share-invite.php:18
+msgid "O convite é pessoal e deve ser aceite com uma conta que use este endereço de e-mail."
+msgstr ""
+
+#: src/Maps/Providers/PMTilesMapSourceProvider.php:35
+msgid "O ficheiro PMTiles local não está disponível ou não está numa localização permitida."
+msgstr ""
+
+#: src/Admin/MapSettingsPage.php:66
+msgid "O JSON de estilo não é válido."
+msgstr ""
+
+#: assets-src/viewer/state.js:52 src/Support/JavaScriptTranslations.php:77
+msgid "O número máximo de aberturas foi atingido."
+msgstr ""
+
+#: src/Commerce/Email/RouteAccessEmail.php:50
+#, php-format
+msgid "O seu roteiro \"%s\" já está disponível"
+msgstr ""
+
+#: src/Commerce/Email/RouteAccessEmail.php:39
+msgid "O seu roteiro já está disponível"
+msgstr ""
+
+#: src/Maps/Providers/OpenFreeMapSourceProvider.php:28
+msgid "O URL de estilo OpenFreeMap não é válido."
+msgstr ""
+
+#: assets-src/admin/index.js:586 src/Support/JavaScriptTranslations.php:78
+msgid "Ocorreu um erro no RouteMaps."
+msgstr ""
+
+#: src/Maps/Providers/OpenFreeMapSourceProvider.php:30
+msgid "OpenFreeMap configurado."
+msgstr ""
+
+#: src/Admin/MapSettingsPage.php:78
+msgid "OpenFreeMap — estilo"
+msgstr ""
+
+#: src/Maps/Providers/PMTilesMapSourceProvider.php:69
+msgid "Origem PMTiles disponível."
+msgstr ""
+
+#: src/Support/SystemHealthService.php:98
+msgid "Os valores sensíveis são removidos antes de serem apresentados."
+msgstr ""
+
+#: assets-src/admin/index.js:70 src/Support/JavaScriptTranslations.php:107
+msgid "ou crie uma nova para começar a desenhar."
+msgstr ""
+
+#: src/Admin/MapSettingsPage.php:80
+msgid "Override de estilo JSON"
+msgstr ""
+
+#: templates/login.php:45
+msgid "Palavra-passe"
+msgstr ""
+
+#: assets-src/admin/index.js:308 assets-src/admin/index.js:339 assets-src/viewer/map.js:28 assets-src/viewer/pois.js:70 assets-src/viewer/pois.js:71 src/Support/JavaScriptTranslations.php:79
+#, php-format
+msgid "Paragem %s"
+msgstr ""
+
+#: assets-src/viewer/pois.js:36 src/Support/JavaScriptTranslations.php:80
+msgid "Paragem obrigatória"
+msgstr ""
+
+#: assets-src/viewer/pois.js:36 src/Support/JavaScriptTranslations.php:81
+msgid "Paragem opcional"
+msgstr ""
+
+#: assets-src/admin/index.js:105 assets-src/viewer/index.js:65 src/Support/JavaScriptTranslations.php:82
+msgid "Paragens"
+msgstr ""
+
+#: src/Privacy/PersonalDataExporter.php:61
+msgid "Partilha de roteiro"
+msgstr ""
+
+#: assets-src/admin/index.js:96 src/Support/JavaScriptTranslations.php:83
+msgid "Percurso"
+msgstr ""
+
+#: src/Support/SystemHealthService.php:48
+msgid "Permalinks"
+msgstr ""
+
+#: src/Commerce/Product/RouteProductPanel.php:97
+msgid "Permitir partilhas"
+msgstr ""
+
+#: assets-src/admin/index.js:115 src/Support/JavaScriptTranslations.php:84
+msgid "Pesquisar"
+msgstr ""
+
+#: assets-src/admin/index.js:114 src/Support/JavaScriptTranslations.php:85
+msgid "Pesquisar POI…"
+msgstr ""
+
+#: src/Support/SystemHealthService.php:44
+msgid "PHP"
+msgstr ""
+
+#: src/Support/SystemHealthService.php:68
+msgid "PMTiles"
+msgstr ""
+
+#: src/Maps/Providers/PMTilesMapSourceProvider.php:37
+msgid "PMTiles local disponível."
+msgstr ""
+
+#: src/Admin/MapSettingsPage.php:77
+msgid "PMTiles — caminho local"
+msgstr ""
+
+#: src/Admin/MapSettingsPage.php:76
+msgid "PMTiles — URL HTTPS"
+msgstr ""
+
+#: src/Admin/LicensesPage.php:80
+msgid "Política adquirida"
+msgstr ""
+
+#: assets-src/viewer/pois.js:114 assets-src/viewer/pois.js:89 src/Support/JavaScriptTranslations.php:86
+msgid "Ponto de interesse"
+msgstr ""
+
+#: assets-src/admin/index.js:111 assets-src/viewer/index.js:66 src/Support/JavaScriptTranslations.php:87
+msgid "Pontos de interesse"
+msgstr ""
+
+#: templates/login.php:12
+msgid "Preencha o utilizador e a palavra-passe."
+msgstr ""
+
+#: src/Privacy/PersonalDataExporter.php:54
+msgid "Primeiro acesso"
+msgstr ""
+
+#: assets-src/admin/index.js:479 assets-src/admin/index.js:79 src/Support/JavaScriptTranslations.php:88
+msgid "Pré-visualizar"
+msgstr ""
+
+#: assets-src/admin/index.js:231 src/Support/JavaScriptTranslations.php:89
+msgid "Publicada"
+msgstr ""
+
+#: assets-src/admin/index.js:81 src/Support/JavaScriptTranslations.php:90
+msgid "Publicar"
+msgstr ""
+
+#: src/Rest/ViewerRouteController.php:100 src/Rest/ViewerRouteController.php:92
+msgid "Published RouteMaps version unavailable."
+msgstr ""
+
+#: src/Support/SystemHealthService.php:58
+msgid "PWA e geolocalização exigem contexto seguro no browser."
+msgstr ""
+
+#: assets-src/admin/index.js:231 src/Support/JavaScriptTranslations.php:91
+msgid "Rascunho"
+msgstr ""
+
+#: assets-src/admin/index.js:449 src/Support/JavaScriptTranslations.php:92
+#, php-format
+msgid "Rascunho guardado · versão %s."
+msgstr ""
+
+#: templates/emails/share-invite.php:11
+msgid "Recebeu um convite para aceder a um roteiro RouteMaps."
+msgstr ""
+
+#: assets-src/admin/index.js:343 src/Support/JavaScriptTranslations.php:94
+msgid "Remover paragem"
+msgstr ""
+
+#: assets-src/admin/index.js:411 src/Support/JavaScriptTranslations.php:93
+msgid "Remover POI"
+msgstr ""
+
+#: src/Admin/LicensesPage.php:76 src/Commerce/Product/RouteProductPanel.php:57 src/Privacy/PersonalDataExporter.php:49 src/Privacy/PersonalDataExporter.php:64 src/Privacy/PersonalDataExporter.php:76
+msgid "Rota"
+msgstr ""
+
+#: assets-src/admin/index.js:302 src/Support/JavaScriptTranslations.php:95
+msgid "Rota carregada."
+msgstr ""
+
+#: assets-src/admin/index.js:526 src/Support/JavaScriptTranslations.php:96
+msgid "Rota importada"
+msgstr ""
+
+#: assets-src/admin/index.js:565 src/Support/JavaScriptTranslations.php:97
+msgid "Rota importada para rascunho."
+msgstr ""
+
+#: assets-src/admin/index.js:64 src/Admin/RoutesPage.php:37 src/Admin/RoutesPage.php:38 src/Support/JavaScriptTranslations.php:98
+msgid "Rotas"
+msgstr ""
+
+#: src/Rest/AdminRoutesController.php:159 src/Rest/AdminRoutesController.php:187 src/Rest/AdminRoutesController.php:223 src/Rest/AdminRoutesController.php:233
+msgid "Route not found."
+msgstr ""
+
+#: src/Rest/AdminRoutesController.php:144
+msgid "Route title is required."
+msgstr ""
+
+#: src/Rest/AdminRoutesController.php:238
+msgid "Route version not found."
+msgstr ""
+
+#: src/Admin/RoutesPage.php:22 src/Admin/RoutesPage.php:23 src/Commerce/Product/RouteProductPanel.php:27 src/Privacy/PersonalDataEraser.php:22 src/Privacy/PersonalDataExporter.php:152 src/Privacy/PersonalDataExporter.php:22 templates/viewer-shell.php:30 templates/viewer-shell.php:36
+msgid "RouteMaps"
+msgstr ""
+
+#: src/Rest/ViewerAccessController.php:157 src/Rest/ViewerSharesController.php:50
+msgid "RouteMaps license not found."
+msgstr ""
+
+#: src/Support/SystemHealthService.php:51
+msgid "RouteMaps necessita de rewrite rules ativas para os URLs da aplicação."
+msgstr ""
+
+#: routemaps.php:63
+#, php-format
+msgid "RouteMaps requer: %s."
+msgstr ""
+
+#: src/Admin/SystemStatusPage.php:44
+msgid "RouteMaps — Estado do sistema"
+msgstr ""
+
+#: src/Admin/MapSettingsPage.php:62
+msgid "RouteMaps — Mapas"
+msgstr ""
+
+#: assets-src/admin/index.js:479 src/Support/JavaScriptTranslations.php:99
+msgid "Sair da pré-visualização"
+msgstr ""
+
+#: src/Support/SystemHealthService.php:42
+msgid "Schema de base de dados"
+msgstr ""
+
+#: src/Commerce/Product/RouteProductPanel.php:42
+msgid "Selecionar rota"
+msgstr ""
+
+#: assets-src/admin/index.js:143 src/Support/JavaScriptTranslations.php:100
+msgid "Selecione KML, KMZ ou GeoJSON"
+msgstr ""
+
+#: assets-src/admin/index.js:508 src/Support/JavaScriptTranslations.php:101
+msgid "Selecione um ficheiro."
+msgstr ""
+
+#: assets-src/admin/index.js:69 src/Support/JavaScriptTranslations.php:102
+msgid "Selecione uma rota"
+msgstr ""
+
+#: assets-src/admin/index.js:543 src/Support/JavaScriptTranslations.php:103
+msgid "Sem correspondência"
+msgstr ""
+
+#: src/Support/SystemHealthService.php:98
+msgid "Sem erros RouteMaps recentes."
+msgstr ""
+
+#: src/Support/SystemHealthService.php:75
+msgid "Service worker"
+msgstr ""
+
+#: src/Admin/SystemStatusPage.php:69
+msgid "Sim"
+msgstr ""
+
+#: assets-src/viewer/pois.js:125 src/Support/JavaScriptTranslations.php:104
+msgid "Telefone"
+msgstr ""
+
+#: src/Rest/AdminCategoriesController.php:129
+msgid "The RouteMaps category request could not be completed."
+msgstr ""
+
+#: src/Rest/AdminImportController.php:278
+msgid "The RouteMaps import request could not be completed."
+msgstr ""
+
+#: src/Rest/AdminLicensesController.php:141
+msgid "The RouteMaps license status could not be changed."
+msgstr ""
+
+#: src/Rest/AdminPoisController.php:200
+msgid "The RouteMaps POI request could not be completed."
+msgstr ""
+
+#: src/Rest/AdminRoutesController.php:352
+msgid "The RouteMaps request could not be completed."
+msgstr ""
+
+#: src/Rest/ViewerAccessController.php:145
+msgid "The RouteMaps session is no longer active."
+msgstr ""
+
+#: src/Rest/ViewerSharesController.php:85
+msgid "The RouteMaps share request could not be completed."
+msgstr ""
+
+#: src/Privacy/PersonalDataExporter.php:47 src/Privacy/PersonalDataExporter.php:61 src/Privacy/PersonalDataExporter.php:72
+msgid "Tipo"
+msgstr ""
+
+#: src/Admin/LicensesPage.php:63
+msgid "Todas as validades"
+msgstr ""
+
+#: src/Admin/LicensesPage.php:57
+msgid "Todos os estados"
+msgstr ""
+
+#: src/Support/SystemHealthService.php:84
+msgid "URLs RouteMaps"
+msgstr ""
+
+#: src/Admin/MapSettingsPage.php:68
+msgid "Use uma browser API key da MapTiler, não um service token. Proteja a chave configurando os Allowed HTTP origins na MapTiler."
+msgstr ""
+
+#: src/Admin/LicensesPage.php:79 src/Commerce/Product/RouteProductPanel.php:62 src/Privacy/PersonalDataExporter.php:51
+msgid "Validade"
+msgstr ""
+
+#: src/Admin/SystemStatusPage.php:47
+msgid "Valor"
+msgstr ""
+
+#: src/Commerce/Product/RouteProductPanel.php:53
+msgid "Vende uma licença autenticada de acesso ao roteiro."
+msgstr ""
+
+#: src/Admin/SystemStatusPage.php:47
+msgid "Verificação"
+msgstr ""
+
+#: assets-src/admin/index.js:467 src/Support/JavaScriptTranslations.php:105
+#, php-format
+msgid "Versão %1$s publicada%2$s"
+msgstr ""
+
+#: src/Support/SystemHealthService.php:41
+msgid "Versão RouteMaps"
+msgstr ""
+
+#: src/Privacy/PersonalDataExporter.php:53
+msgid "Válida até"
+msgstr ""
+
+#: src/Privacy/PersonalDataExporter.php:52
+msgid "Válida desde"
+msgstr ""
+
+#: src/Commerce/Product/RouteProductPanel.php:84
+msgid "Válido até"
+msgstr ""
+
+#: src/Commerce/Product/RouteProductPanel.php:78
+msgid "Válido desde"
+msgstr ""
+
+#: assets-src/viewer/pois.js:130 src/Support/JavaScriptTranslations.php:106
+msgid "Website"
+msgstr ""
+
+#: src/Support/SystemHealthService.php:45
+msgid "WooCommerce"
+msgstr ""
+
+#: src/Support/SystemHealthService.php:43
+msgid "WordPress"
+msgstr ""
+
+#: src/Rest/ViewerAccessController.php:162
+msgid "You cannot access this RouteMaps license."
+msgstr ""
+
+#: src/Rest/AdminRoutesController.php:115
+msgid "You cannot edit RouteMaps routes."
+msgstr ""
+
+#: src/Rest/AdminImportController.php:70
+msgid "You cannot import RouteMaps routes."
+msgstr ""
+
+#: src/Rest/AdminCategoriesController.php:38
+msgid "You cannot manage RouteMaps categories."
+msgstr ""
+
+#: src/Rest/AdminLicensesController.php:67
+msgid "You cannot manage RouteMaps licenses."
+msgstr ""
+
+#: src/Rest/AdminPoisController.php:43
+msgid "You cannot manage RouteMaps POIs."
+msgstr ""
+
+#: src/Rest/AdminRoutesController.php:127
+msgid "You cannot publish RouteMaps routes."
+msgstr ""
+
+#: assets-src/viewer/state.js:50 src/Support/JavaScriptTranslations.php:108
+msgid "É necessário iniciar sessão para abrir este roteiro."
+msgstr ""

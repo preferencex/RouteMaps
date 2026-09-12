@@ -1,0 +1,13 @@
+/vendor/
+/node_modules/
+/dist/
+/assets/admin/
+/assets/viewer/
+/playwright-report/
+/test-results/
+/.phpunit.cache/
+/.phpunit.result.cache
+/.phpstan.cache/
+/coverage/
+/.wp-env/
+/tests/E2E/.ci-env

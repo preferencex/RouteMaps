@@ -1,0 +1,88 @@
+:root {
+  --rt-navy: #173f59;
+  --rt-teal: #00a099;
+  --rt-teal-dark: #007f79;
+  --rt-gold: #d6a900;
+  --rt-bg: #f3f6f8;
+  --rt-border: #dbe3e8;
+  --rt-muted: #687986;
+  --rt-danger: #b42318;
+}
+
+.routemaps-admin-wrap { margin: 0 0 0 -20px; }
+.routemaps-admin-root { min-height: calc(100vh - 32px); background: var(--rt-bg); color: var(--rt-navy); }
+.routemaps-admin-loading { display: flex; gap: 10px; align-items: center; padding: 32px; }
+.routemaps-admin-app { min-height: calc(100vh - 32px); }
+.routemaps-admin-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 22px 28px; background: #fff; border-bottom: 1px solid var(--rt-border); }
+.routemaps-admin-header h1 { margin: 2px 0 4px; font-size: 26px; line-height: 1.2; color: var(--rt-navy); }
+.routemaps-admin-header p { margin: 0; color: var(--rt-muted); }
+.routemaps-eyebrow { color: var(--rt-teal); text-transform: uppercase; letter-spacing: .12em; font-size: 10px; font-weight: 800; }
+.routemaps-header-actions, .routemaps-editor-actions, .routemaps-dialog-actions, .routemaps-map-toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.routemaps-admin-grid { display: grid; grid-template-columns: 245px minmax(0, 1fr); min-height: calc(100vh - 128px); }
+.routemaps-route-sidebar { background: #fff; border-right: 1px solid var(--rt-border); padding: 18px 14px; }
+.routemaps-sidebar-title { padding: 0 8px 10px; font-size: 11px; color: var(--rt-muted); text-transform: uppercase; letter-spacing: .08em; font-weight: 700; }
+.routemaps-route-list { display: grid; gap: 6px; }
+.routemaps-route-item { width: 100%; border: 0; background: transparent; border-radius: 8px; padding: 10px 12px; text-align: left; cursor: pointer; color: var(--rt-navy); }
+.routemaps-route-item:hover, .routemaps-route-item.is-active { background: #e9f7f6; }
+.routemaps-route-item strong, .routemaps-route-item span { display: block; }
+.routemaps-route-item span { margin-top: 3px; font-size: 11px; color: var(--rt-muted); }
+.routemaps-editor-panel { min-width: 0; }
+.routemaps-empty-state { display: grid; place-content: center; gap: 6px; min-height: 70vh; text-align: center; color: var(--rt-muted); }
+.routemaps-empty-state strong { color: var(--rt-navy); font-size: 20px; }
+.routemaps-editor { padding: 18px; }
+.routemaps-editor-topbar { display: flex; gap: 16px; align-items: end; justify-content: space-between; margin-bottom: 14px; }
+.routemaps-field { display: grid; gap: 5px; font-size: 11px; font-weight: 700; color: var(--rt-muted); }
+.routemaps-field input, .routemaps-field select, .routemaps-search-row input, .routemaps-import-map-row select { min-height: 38px; border: 1px solid #c8d4dc; border-radius: 6px; background: #fff; }
+.routemaps-title-field { min-width: min(520px, 55vw); }
+.routemaps-title-field input { font-size: 17px; font-weight: 700; color: var(--rt-navy); }
+.routemaps-workspace { display: grid; grid-template-columns: minmax(0, 1fr) 340px; background: #fff; border: 1px solid var(--rt-border); border-radius: 10px; overflow: hidden; min-height: 680px; }
+.routemaps-map-column { min-width: 0; display: grid; grid-template-rows: auto 1fr; }
+.routemaps-map-toolbar { padding: 10px 12px; border-bottom: 1px solid var(--rt-border); background: #fbfcfd; }
+.routemaps-editor-map { min-height: 620px; width: 100%; }
+.routemaps-map-crosshair { cursor: crosshair !important; }
+.routemaps-properties { border-left: 1px solid var(--rt-border); background: #fbfcfd; overflow: auto; max-height: 680px; }
+.routemaps-properties details { border-bottom: 1px solid var(--rt-border); }
+.routemaps-properties summary { cursor: pointer; padding: 13px 14px; font-weight: 700; color: var(--rt-navy); list-style: none; }
+.routemaps-properties summary::-webkit-details-marker { display: none; }
+.routemaps-property-body { padding: 0 14px 14px; }
+.routemaps-inline-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.routemaps-count { display: inline-grid; place-content: center; min-width: 20px; height: 20px; margin-left: 6px; border-radius: 10px; background: #e2efef; color: var(--rt-teal-dark); font-size: 10px; }
+.routemaps-stop-list, .routemaps-poi-results, .routemaps-selected-pois { display: grid; gap: 6px; }
+.routemaps-stop-row { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto auto auto; gap: 5px; align-items: center; }
+.routemaps-stop-row input { min-width: 0; width: 100%; }
+.routemaps-stop-number { display: grid; place-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--rt-teal); color: #fff; font-size: 10px; font-weight: 800; }
+.routemaps-search-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px; margin-bottom: 8px; }
+.routemaps-poi-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px; border: 1px solid var(--rt-border); border-radius: 6px; background: #fff; }
+.routemaps-selected-pois { margin-top: 10px; }
+.routemaps-poi-row.is-selected { border-color: #b8deda; background: #f1faf9; }
+.routemaps-category-toggle { display: flex; gap: 8px; align-items: center; padding: 5px 0; }
+.routemaps-editor-status { min-height: 20px; padding: 10px 2px 0; color: var(--rt-muted); }
+.routemaps-editor-status[data-type="success"] { color: var(--rt-teal-dark); }
+.routemaps-editor-status[data-type="error"] { color: var(--rt-danger); }
+.routemaps-editor.is-preview .routemaps-properties, .routemaps-editor.is-preview .routemaps-map-toolbar, .routemaps-editor.is-preview .routemaps-title-field { opacity: .35; pointer-events: none; }
+.routemaps-dialog { width: min(760px, calc(100vw - 40px)); border: 0; padding: 0; border-radius: 12px; box-shadow: 0 18px 60px rgba(23,63,89,.24); }
+.routemaps-dialog::backdrop { background: rgba(16, 36, 49, .52); }
+.routemaps-dialog-card { padding: 22px; }
+.routemaps-dialog-card h2 { margin: 4px 0 18px; color: var(--rt-navy); }
+.routemaps-dialog-actions { justify-content: flex-end; margin-top: 18px; }
+.routemaps-dialog-heading { display: flex; align-items: start; justify-content: space-between; gap: 12px; }
+.routemaps-file-drop { display: grid; place-items: center; gap: 10px; padding: 24px; border: 1px dashed #9eb2bd; border-radius: 8px; background: #f8fbfc; }
+.routemaps-import-step { display: grid; gap: 12px; }
+.routemaps-import-preview { margin-top: 18px; padding: 16px; border-radius: 8px; background: #f4f8fa; }
+.routemaps-import-preview h3 { margin: 0 0 4px; }
+.routemaps-import-mapping { display: grid; gap: 8px; margin-top: 14px; }
+.routemaps-import-map-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: center; }
+.routemaps-muted { color: var(--rt-muted); font-size: 12px; }
+.routemaps-stop-marker::after { content: attr(data-stop-index); position: absolute; inset: 0; display: grid; place-content: center; color: #fff; font-size: 9px; font-weight: 800; pointer-events: none; }
+
+@media (max-width: 1200px) {
+  .routemaps-workspace { grid-template-columns: minmax(0, 1fr) 300px; }
+}
+@media (max-width: 960px) {
+  .routemaps-admin-grid { grid-template-columns: 190px minmax(0, 1fr); }
+  .routemaps-workspace { grid-template-columns: 1fr; }
+  .routemaps-properties { border-left: 0; border-top: 1px solid var(--rt-border); max-height: none; }
+  .routemaps-editor-map { min-height: 480px; }
+  .routemaps-editor-topbar, .routemaps-admin-header { align-items: stretch; flex-direction: column; }
+  .routemaps-title-field { min-width: 0; }
+}
