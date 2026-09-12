@@ -78,7 +78,7 @@ final class PoiCategoryRepositoryTest extends WP_UnitTestCase {
 
         $loaded = $pois->findByUuid($poi->uuid());
         self::assertNotNull($loaded);
-        self::assertSame('São Leonardo alert(1)', $loaded->name());
+        self::assertSame('São Leonardo', $loaded->name());
         self::assertEqualsWithDelta(41.1234567, $loaded->latitude(), 0.00000001);
         self::assertEqualsWithDelta(-8.7654321, $loaded->longitude(), 0.00000001);
         self::assertSame([12, 34], $loaded->gallery());
