@@ -22,3 +22,9 @@
 /README.md
 .wp-env.e2e.json
 tests/release-ci-smoke.sh
+/.phpstan-cache
+/.phpunit.result.cache
+/phpstan-stubs/
+/playwright-report/
+/test-results/
+/coverage/
