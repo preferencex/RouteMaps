@@ -34,7 +34,7 @@ final class WpdbRouteVersionRepository implements RouteVersionRepositoryInterfac
         try {
             $data = json_decode($version->snapshotJson(), true, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $error) {
-            throw new RuntimeException('published_route_snapshot_invalid', 0, $error);
+            throw new RuntimeException('published_route_snapshot_invalid', 0, $error); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Chained JSON exception is not rendered.
         }
         if (!is_array($data)) {
             throw new RuntimeException('published_route_snapshot_invalid');

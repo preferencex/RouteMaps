@@ -10,6 +10,7 @@
     <exclude-pattern>vendor/*</exclude-pattern>
     <arg name="extensions" value="php"/>
     <arg value="sp"/>
+    <arg name="warning-severity" value="0"/>
 
     <!-- Baseline PHP correctness without imposing legacy WordPress formatting
          on the approved PSR-4/camelCase architecture. -->

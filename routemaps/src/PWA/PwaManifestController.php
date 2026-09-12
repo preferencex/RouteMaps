@@ -24,7 +24,7 @@ final class PwaManifestController {
         $routeUuid = strtolower(trim((string) get_query_var(RouteRewriteManager::QUERY_ROUTE_UUID)));
         $licenseUuid = '';
         if (isset($_GET['license']) && is_string($_GET['license'])) {
-            $candidate = strtolower(trim((string) wp_unslash($_GET['license'])));
+            $candidate = strtolower(trim(sanitize_text_field(wp_unslash((string) $_GET['license']))));
             if ($this->isUuid($candidate)) {
                 $licenseUuid = $candidate;
             }

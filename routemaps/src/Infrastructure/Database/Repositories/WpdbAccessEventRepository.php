@@ -31,7 +31,7 @@ final class WpdbAccessEventRepository implements AccessEventRepositoryInterface 
                 ? null
                 : json_encode($metadata, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         } catch (JsonException $exception) {
-            throw new RuntimeException('access_event_metadata_invalid', 0, $exception);
+            throw new RuntimeException('access_event_metadata_invalid', 0, $exception); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Chained JSON exception is not rendered.
         }
         $inserted = $this->db->insert($this->table, [
             'license_id' => $licenseId,

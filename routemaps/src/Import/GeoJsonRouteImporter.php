@@ -30,7 +30,7 @@ final class GeoJsonRouteImporter implements RouteImporterInterface {
         try {
             $document = json_decode($file->contents(), true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $exception) {
-            throw new InvalidArgumentException('import_geojson_invalid', 0, $exception);
+            throw new InvalidArgumentException('import_geojson_invalid', 0, $exception); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Chained parser exception is not rendered.
         }
         if (!is_array($document)) {
             throw new InvalidArgumentException('import_geojson_invalid');

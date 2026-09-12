@@ -33,7 +33,11 @@ final class PMTilesAssetController {
         if ('1' !== (string) get_query_var(self::QUERY_VAR, '')) {
             return;
         }
-        $this->stream(isset($_SERVER['HTTP_RANGE']) ? (string) $_SERVER['HTTP_RANGE'] : null);
+        $rangeHeader = null;
+        if (isset($_SERVER['HTTP_RANGE'])) {
+            $rangeHeader = sanitize_text_field(wp_unslash((string) $_SERVER['HTTP_RANGE']));
+        }
+        $this->stream($rangeHeader);
         exit;
     }
 
@@ -125,7 +129,7 @@ final class PMTilesAssetController {
                 if (false === $chunk || '' === $chunk) {
                     break;
                 }
-                echo $chunk;
+                echo $chunk; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Raw PMTiles binary range response.
                 $remaining -= strlen($chunk);
             }
         } finally {
