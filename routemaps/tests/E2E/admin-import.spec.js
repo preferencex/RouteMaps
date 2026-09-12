@@ -29,6 +29,8 @@ test('keeps imported route data visible when the external basemap cannot load', 
   await openRouteMapsAdmin(page);
   await importFixtureRoute(page, importFixture);
 
+  await expect(page.locator('[data-role="empty-state"]')).toBeHidden();
+  await expect(page.locator('[data-role="editor"]')).toBeVisible();
   await expect.poll(() => page.evaluate(() => globalThis.RouteMapsAdminApp?.draft?.stops?.length || 0)).toBeGreaterThan(0);
   await expect.poll(() => page.evaluate(() => globalThis.RouteMapsAdminApp?.draft?.geometry?.type || '')).toMatch(/LineString/);
   await expect(page.locator('[data-role="stop-count"]')).not.toHaveText('0');
