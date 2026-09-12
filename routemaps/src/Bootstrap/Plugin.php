@@ -134,7 +134,7 @@ final class Plugin {
             new GeoJsonRouteImporter($importValidator),
         ]);
 
-        (new AdminRoutesController($routes, $versions, $drafts, $publisher, $duplicator))->registerRoutes();
+        (new AdminRoutesController($routes, $versions, $drafts, $publisher, $duplicator, $wpdb))->registerRoutes();
         (new AdminImportController($importValidator, $importers, $routes, $drafts, $categories))->registerRoutes();
         (new AdminPoisController($pois, $categories))->registerRoutes();
         (new AdminCategoriesController($categories))->registerRoutes();
