@@ -18,6 +18,11 @@ use RouteMaps\Core\Infrastructure\Database\Repositories\WpdbAccessSessionReposit
 use RouteMaps\Core\Infrastructure\Database\Repositories\WpdbLicenseRepository;
 use RouteMaps\Core\Infrastructure\Database\Repositories\WpdbLicenseUserRepository;
 use RouteMaps\Core\Infrastructure\Database\Repositories\WpdbRouteRepository;
+use RouteMaps\Core\Infrastructure\Database\MigrationManager;
+use RouteMaps\Core\Infrastructure\Database\Migrations\Migration001RoutesVersions;
+use RouteMaps\Core\Infrastructure\Database\Migrations\Migration002PoisCategories;
+use RouteMaps\Core\Infrastructure\Database\Migrations\Migration003Licenses;
+use RouteMaps\Core\Infrastructure\Database\Migrations\Migration004AccessSharing;
 use RouteMaps\Core\Maps\MapSettings;
 use RouteMaps\Core\Maps\MapSourceHealth;
 use RouteMaps\Core\Maps\MapSourceProviderInterface;
@@ -33,6 +38,28 @@ use WP_REST_Request;
 use WP_UnitTestCase;
 
 final class ViewerPayloadTest extends WP_UnitTestCase {
+    protected function setUp(): void {
+        parent::setUp();
+        global $wpdb;
+        delete_option('routemaps_db_version');
+        (new MigrationManager($wpdb, [
+            new Migration001RoutesVersions(),
+            new Migration002PoisCategories(),
+            new Migration003Licenses(),
+            new Migration004AccessSharing(),
+        ]))->migrate();
+        foreach ([
+            'routemaps_access_events',
+            'routemaps_access_sessions',
+            'routemaps_license_users',
+            'routemaps_licenses',
+            'routemaps_route_versions',
+            'routemaps_routes',
+        ] as $suffix) {
+            $wpdb->query('DELETE FROM ' . $wpdb->prefix . $suffix);
+        }
+    }
+
     protected function tearDown(): void {
         delete_option(MapSettings::OPTION_NAME);
         parent::tearDown();
