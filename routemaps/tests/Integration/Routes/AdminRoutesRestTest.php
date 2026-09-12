@@ -36,12 +36,16 @@ final class AdminRoutesRestTest extends WP_UnitTestCase {
 
     public function test_route_endpoints_enforce_authentication_and_capabilities(): void {
         wp_set_current_user(0);
-        $anonymous = rest_do_request(new WP_REST_Request('POST', '/routemaps/v1/admin/routes'));
+        $anonymousRequest = new WP_REST_Request('POST', '/routemaps/v1/admin/routes');
+        $anonymousRequest->set_param('title', 'Permission probe');
+        $anonymous = rest_do_request($anonymousRequest);
         self::assertSame(401, $anonymous->get_status());
 
         $subscriberId = self::factory()->user->create(['role' => 'subscriber']);
         wp_set_current_user($subscriberId);
-        $subscriber = rest_do_request(new WP_REST_Request('POST', '/routemaps/v1/admin/routes'));
+        $subscriberRequest = new WP_REST_Request('POST', '/routemaps/v1/admin/routes');
+        $subscriberRequest->set_param('title', 'Permission probe');
+        $subscriber = rest_do_request($subscriberRequest);
         self::assertSame(403, $subscriber->get_status());
     }
 
