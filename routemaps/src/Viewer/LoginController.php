@@ -64,11 +64,22 @@ final class LoginController {
             }
         }
 
-        if ('login' !== $view || 'POST' !== strtoupper((string) ($_SERVER['REQUEST_METHOD'] ?? 'GET'))) {
+        $requestMethod = isset($_SERVER['REQUEST_METHOD'])
+            ? strtoupper(sanitize_text_field(wp_unslash((string) $_SERVER['REQUEST_METHOD'])))
+            : 'GET';
+        if ('login' !== $view || 'POST' !== $requestMethod) {
             return;
         }
 
-        $request = is_array($_POST) ? $_POST : [];
+        $nonce = isset($_POST['_routemaps_login_nonce'])
+            ? (string) wp_unslash($_POST['_routemaps_login_nonce'])
+            : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce is verified immediately below.
+        if ('' === $nonce || !wp_verify_nonce($nonce, 'routemaps_login')) {
+            wp_safe_redirect($this->loginUrl('', 'login_csrf'));
+            exit;
+        }
+
+        $request = is_array($_POST) ? wp_unslash($_POST) : [];
         try {
             $redirect = $this->authenticate($request);
         } catch (LogicException $error) {
