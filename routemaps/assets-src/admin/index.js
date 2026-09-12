@@ -309,13 +309,25 @@ class RouteMapsAdminApp {
 
     try {
       await this.mapEditor.mount();
-      await this.mapEditor.loadGeometry(this.draft.geometry);
+
+      // Stops and POIs are independent from route-line editing. Render them
+      // first so a geometry/Geoman problem can never hide imported points.
       this.mapEditor.setRouteStyle(this.draft.style);
       this.mapEditor.setStops(this.draft.stops);
       this.renderSelectedPois();
+
+      let geometryError = null;
+      try {
+        await this.mapEditor.loadGeometry(this.draft.geometry);
+      } catch (error) {
+        geometryError = error;
+      }
+
       if (this.draft.geometry) this.mapEditor.fitToGeometry(this.draft.geometry);
 
-      if (this.mapEditor.isDegraded()) {
+      if (geometryError) {
+        this.showStatus(sprintf(__('Rota carregada, mas o percurso não pôde ser preparado para edição: %s'), this.message(geometryError)), 'warning');
+      } else if (this.mapEditor.isDegraded()) {
         this.showStatus(__('Rota carregada. O mapa base externo não respondeu; a geometria continua disponível em modo simplificado.'), 'warning');
       } else {
         this.showStatus(__('Rota carregada.'), 'success');
