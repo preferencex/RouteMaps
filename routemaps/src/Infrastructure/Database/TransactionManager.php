@@ -19,7 +19,10 @@ final class TransactionManager {
      * @return T
      */
     public function run(callable $callback): mixed {
-        $nested = 1 === (int) $this->db->get_var('SELECT @@in_transaction');
+        // WordPress' test suite (and callers that disable autocommit) already owns
+        // the surrounding transaction. MySQL does not expose MariaDB's
+        // @@in_transaction variable, so use the portable autocommit state here.
+        $nested = 0 === (int) $this->db->get_var('SELECT @@autocommit');
         $savepoint = null;
 
         if ($nested) {
