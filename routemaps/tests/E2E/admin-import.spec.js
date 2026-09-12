@@ -32,5 +32,9 @@ test('keeps imported route data visible when the external basemap cannot load', 
   await expect.poll(() => page.evaluate(() => globalThis.RouteMapsAdminApp?.draft?.stops?.length || 0)).toBeGreaterThan(0);
   await expect.poll(() => page.evaluate(() => globalThis.RouteMapsAdminApp?.draft?.geometry?.type || '')).toMatch(/LineString/);
   await expect(page.locator('[data-role="stop-count"]')).not.toHaveText('0');
-  await expect(page.locator('[data-role="status"]')).toContainText(/Rota carregada/i, { timeout: 25_000 });
+  await expect.poll(
+    () => page.evaluate(() => Boolean(globalThis.RouteMapsAdminApp?.mapEditor?.isDegraded?.())),
+    { timeout: 25_000 },
+  ).toBe(true);
+  await expect(page.locator('[data-role="status"]')).toContainText(/Rota importada para rascunho|Rota carregada/i);
 });
