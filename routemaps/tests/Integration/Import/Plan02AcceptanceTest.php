@@ -30,7 +30,8 @@ final class Plan02AcceptanceTest extends WP_UnitTestCase {
             $wpdb->query('DELETE FROM ' . $wpdb->prefix . $suffix);
         }
 
-        do_action('rest_api_init');
+        $GLOBALS['wp_rest_server'] = null;
+        rest_get_server();
         $user = self::factory()->user->create_and_get(['role' => 'administrator']);
         wp_set_current_user($user->ID);
     }
@@ -40,6 +41,7 @@ final class Plan02AcceptanceTest extends WP_UnitTestCase {
             @unlink($path);
         }
         $this->uploads = [];
+        $GLOBALS['wp_rest_server'] = null;
         wp_set_current_user(0);
         parent::tearDown();
     }
